@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, fn, col, literal } = require('sequelize');
 const { Call, Appointment, Lead, Metric, AIAgent } = require('../models');
 const dayjs = require('dayjs');
 
@@ -24,7 +24,7 @@ class AnalyticsService {
       Call.count({ where: { userId, createdAt: { [Op.gte]: startDate } } }),
       Call.findAll({
         where: { userId, createdAt: { [Op.gte]: startDate } },
-        attributes: ['status', [Call.sequelize.fn('COUNT', '*'), 'count']],
+        attributes: ['status', [fn('COUNT', '*'), 'count']],
         group: ['status']
       }),
       Lead.count({ where: { userId, createdAt: { [Op.gte]: startDate } } }),
@@ -32,15 +32,15 @@ class AnalyticsService {
       Appointment.count({ where: { userId, createdAt: { [Op.gte]: startDate } } }),
       Call.findOne({
         where: { userId, createdAt: { [Op.gte]: startDate }, duration: { [Op.gt]: 0 } },
-        attributes: [[Call.sequelize.fn('AVG', Call.sequelize.col('duration')), 'avgDuration']]
+        attributes: [[fn('AVG', col('duration')), 'avgDuration']]
       }),
       Call.findOne({
         where: { userId, createdAt: { [Op.gte]: startDate } },
-        attributes: [[Call.sequelize.fn('SUM', Call.sequelize.col('cost')), 'totalCost']]
+        attributes: [[fn('SUM', col('cost')), 'totalCost']]
       }),
       Call.findAll({
         where: { userId, createdAt: { [Op.gte]: startDate } },
-        attributes: ['sentiment', [Call.sequelize.fn('COUNT', '*'), 'count']],
+        attributes: ['sentiment', [fn('COUNT', '*'), 'count']],
         group: ['sentiment']
       }),
       this.getCallsOverTime(userId, period),
@@ -80,12 +80,12 @@ class AnalyticsService {
     const calls = await Call.findAll({
       where: { userId, createdAt: { [Op.gte]: startDate } },
       attributes: [
-        [Call.sequelize.fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', Call.sequelize.col('created_at')), 'date'],
-        [Call.sequelize.fn('COUNT', '*'), 'count'],
-        [Call.sequelize.fn('SUM', Call.sequelize.col('duration')), 'duration']
+        [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('created_at')), 'date'],
+        [fn('COUNT', '*'), 'count'],
+        [fn('SUM', col('duration')), 'duration']
       ],
-      group: [Call.sequelize.fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', Call.sequelize.col('created_at'))],
-      order: [[Call.sequelize.fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', Call.sequelize.col('created_at')), 'ASC']],
+      group: [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('created_at'))],
+      order: [[fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('created_at')), 'ASC']],
       raw: true
     });
 
@@ -128,21 +128,21 @@ class AnalyticsService {
     ] = await Promise.all([
       Lead.findAll({
         where: { userId, createdAt: { [Op.gte]: startDate } },
-        attributes: ['status', [Lead.sequelize.fn('COUNT', '*'), 'count']],
+        attributes: ['status', [fn('COUNT', '*'), 'count']],
         group: ['status']
       }),
       Lead.findAll({
         where: { userId, createdAt: { [Op.gte]: startDate } },
-        attributes: ['source', [Lead.sequelize.fn('COUNT', '*'), 'count']],
+        attributes: ['source', [fn('COUNT', '*'), 'count']],
         group: ['source']
       }),
       Lead.findAll({
         where: { userId, createdAt: { [Op.gte]: startDate } },
         attributes: [
-          [Lead.sequelize.literal('CASE WHEN score >= 80 THEN \"high\" WHEN score >= 50 THEN \"medium\" ELSE \"low\" END'), 'category'],
-          [Lead.sequelize.fn('COUNT', '*'), 'count']
+          [literal('CASE WHEN score >= 80 THEN \"high\" WHEN score >= 50 THEN \"medium\" ELSE \"low\" END'), 'category'],
+          [fn('COUNT', '*'), 'count']
         ],
-        group: [Lead.sequelize.literal('CASE WHEN score >= 80 THEN \"high\" WHEN score >= 50 THEN \"medium\" ELSE \"low\" END')]
+        group: [literal('CASE WHEN score >= 80 THEN \"high\" WHEN score >= 50 THEN \"medium\" ELSE \"low\" END')]
       }),
       this.getConversionFunnel(userId, startDate)
     ]);
@@ -192,7 +192,7 @@ class AnalyticsService {
       Appointment.count({ where: { userId, createdAt: { [Op.gte]: today } } }),
       Call.findOne({
         where: { userId, createdAt: { [Op.gte]: lastHour }, status: 'completed' },
-        attributes: [[Call.sequelize.fn('AVG', Call.sequelize.col('duration')), 'avg']]
+        attributes: [[fn('AVG', col('duration')), 'avg']]
       })
     ]);
 

@@ -1,5 +1,5 @@
 
-const { Call, AIAgent, Lead, Appointment } = require('../models/Index');
+const { Call, AIAgent, Lead, Appointment } = require('../models');
 const { Op } = require('sequelize');
 const openaiService = require('../services/openAiService');
 const twilioService = require('../services/twilioService');

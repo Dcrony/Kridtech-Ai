@@ -1,5 +1,5 @@
 
-const { Appointment, Call, AIAgent } = require('../models/Index');
+const { Appointment, Call, AIAgent } = require('../models');
 const { Op } = require('sequelize');
 const dayjs = require('dayjs');
 const notificationService = require('../services/notificationService');

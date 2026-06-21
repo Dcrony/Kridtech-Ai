@@ -40,6 +40,7 @@ export const useAuthStore = create(
             body: JSON.stringify(userData),
           });
           const data = await response.json();
+console.log("REGISTER RESPONSE:", data);
           if (data.success) {
             set({ user: data.data.user, token: data.data.tokens.accessToken });
             return { success: true };

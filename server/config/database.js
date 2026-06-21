@@ -7,22 +7,21 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 5432,
-    dialect: 'postgres',
-    logging: process.env.NODE_ENV === 'development' ? console.log : false,
-    pool: {
-      max: 20,
-      min: 0,
-      acquire: 60000,
-      idle: 10000
-    },
-    define: {
-      timestamps: true,
-      underscored: true,
-      freezeTableName: true
-    }
+    port: process.env.DB_PORT,
+    dialect: "postgres",
+    logging: false,
+    dialectOptions:
+      process.env.DB_SSL === "true"
+        ? {
+            ssl: {
+              require: true,
+              rejectUnauthorized: false,
+            },
+          }
+        : {},
   }
 );
+
 
 // Test connection
 const testConnection = async () => {

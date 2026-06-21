@@ -5,17 +5,17 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
-const { sequelize, testConnection } = require('../config/database');
-const { errorHandler } = require('../middleware/errorHandler');
+const { sequelize, testConnection } = require('./config/database');
+const { errorHandler } = require('./middleware/errorHandler');
 
 // Import routes
-const authRoutes = require('../routes/auth');
-const agentRoutes = require('../routes/agents');
-const callRoutes = require('../routes/calls');
-const appointmentRoutes = require('../routes/appointments');
-const leadRoutes = require('../routes/leads');
-const analyticsRoutes = require('../routes/analytics');
-const notificationRoutes = require('../routes/notifications');
+const authRoutes = require('./routes/auth');
+const agentRoutes = require('./routes/agents');
+const callRoutes = require('./routes/calls');
+const appointmentRoutes = require('./routes/appointments');
+const leadRoutes = require('./routes/leads');
+const analyticsRoutes = require('./routes/analytics');
+const notificationRoutes = require('./routes/notifications');
 
 const app = express();
 

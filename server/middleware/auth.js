@@ -1,12 +1,13 @@
 
 const jwt = require('jsonwebtoken');
-const { User } = require('../models/Index');
+const User = require('../models/User');
 
 const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('[auth] Missing Authorization header. Incoming headers:', req.headers);
       return res.status(401).json({ 
         success: false, 
         message: 'Access denied. No token provided.' 

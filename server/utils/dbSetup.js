@@ -1,5 +1,11 @@
 const { sequelize } = require('../config/database');
-const { User, AIAgent, Call, Appointment, Lead, Metric, Notification } = require('../models');
+const User = require('../models/User');
+const AIAgent = require('../models/AIAgent');
+const Call = require('../models/Call');
+const Appointment = require('../models/Appointment');
+const Lead = require('../models/Lead');
+const Metric = require('../models/Metric');
+const Notification = require('../models/Notification');
 
 const setupDatabase = async () => {
   try {

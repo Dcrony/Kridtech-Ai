@@ -10,7 +10,7 @@ require('dotenv').config();
 const { sequelize, testConnection } = require('./config/database');
 const { errorHandler } = require('./middleware/errorHandler');
 
-const initAssociations = require('./models/Index');
+const initAssociations = require('./models/associations');
 
 initAssociations();
 

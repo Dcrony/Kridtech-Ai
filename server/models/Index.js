@@ -25,6 +25,7 @@ Appointment.belongsTo(Call, { foreignKey: 'callId', as: 'call' });
 User.hasMany(Lead, { foreignKey: 'userId', as: 'leads' });
 Lead.belongsTo(User, { foreignKey: 'userId', as: 'owner' });
 
+
 AIAgent.hasMany(Lead, { foreignKey: 'agentId', as: 'leads' });
 Lead.belongsTo(AIAgent, { foreignKey: 'agentId', as: 'agent' });
 

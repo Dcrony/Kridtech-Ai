@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { emitTokenChange } from '../services/tokenUpdater';
 
 export const useAuthStore = create(
   persist(
@@ -8,8 +9,14 @@ export const useAuthStore = create(
       token: null,
       isLoading: false,
       
-      setAuth: (user, token) => set({ user, token }),
-      clearAuth: () => set({ user: null, token: null }),
+      setAuth: (user, token) => {
+        set({ user, token });
+        emitTokenChange(token);
+      },
+      clearAuth: () => {
+        set({ user: null, token: null });
+        emitTokenChange(null);
+      },
       updateUser: (user) => set({ user }),
       
       login: async (email, password) => {
@@ -22,7 +29,7 @@ export const useAuthStore = create(
           });
           const data = await response.json();
           if (data.success) {
-            set({ user: data.data.user, token: data.data.tokens.accessToken });
+            get().setAuth(data.data.user, data.data.tokens.accessToken);
             return { success: true };
           }
           return { success: false, message: data.message };
@@ -40,9 +47,8 @@ export const useAuthStore = create(
             body: JSON.stringify(userData),
           });
           const data = await response.json();
-console.log("REGISTER RESPONSE:", data);
           if (data.success) {
-            set({ user: data.data.user, token: data.data.tokens.accessToken });
+            get().setAuth(data.data.user, data.data.tokens.accessToken);
             return { success: true };
           }
           return { success: false, message: data.message };
@@ -51,6 +57,13 @@ console.log("REGISTER RESPONSE:", data);
         }
       },
     }),
-    { name: 'auth-storage' }
+  {
+      name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        if (state?.token) {
+          emitTokenChange(state.token);
+        }
+      },
+    }
   )
 );

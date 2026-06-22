@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuthStore } from '../../context/authStore';
 import { 
@@ -6,10 +5,9 @@ import {
   Bell, 
   Shield, 
   CreditCard, 
-  Globe, 
   Save, 
   Loader2,
-  CheckCircle
+  X
 } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
@@ -87,29 +85,159 @@ const Settings = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 mt-1">Manage your account and preferences</p>
+    <div style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }} className="text-black">
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+
+        .settings-display-font { font-family: 'Syne', sans-serif; }
+
+        .settings-section-label {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: #888;
+        }
+
+        .settings-card {
+          background: #fff;
+          border: 1px solid #E5E5E5;
+          border-radius: 2px;
+        }
+
+        .settings-hairline {
+          height: 1px;
+          background: #E5E5E5;
+        }
+
+        .settings-accent-dot {
+          width: 6px;
+          height: 6px;
+          background: #1A1AFF;
+          border-radius: 50%;
+          display: inline-block;
+          flex-shrink: 0;
+        }
+
+        .settings-tab {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 16px;
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.01em;
+          text-align: left;
+          background: transparent;
+          border: none;
+          border-left: 2px solid transparent;
+          color: #888;
+          cursor: pointer;
+          transition: background 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .settings-tab:hover { color: #0A0A0A; background: #F7F7F7; }
+        .settings-tab.active {
+          color: #0A0A0A;
+          background: #F7F7F7;
+          border-left: 2px solid #1A1AFF;
+        }
+
+        .settings-input {
+          width: 100%;
+          background: #fff;
+          border: 1px solid #E5E5E5;
+          border-radius: 2px;
+          padding: 11px 14px;
+          font-size: 14px;
+          color: #0A0A0A;
+          outline: none;
+          transition: border-color 0.15s;
+        }
+        .settings-input:focus { border-color: #0A0A0A; }
+        .settings-input:disabled { opacity: 0.5; cursor: not-allowed; background: #F7F7F7; }
+
+        .settings-label {
+          display: block;
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: #888;
+          margin-bottom: 8px;
+        }
+
+        .settings-btn-primary {
+          background: #0A0A0A;
+          color: #fff;
+          padding: 12px 24px;
+          border-radius: 2px;
+          font-weight: 600;
+          font-size: 13px;
+          letter-spacing: 0.01em;
+          border: 2px solid #0A0A0A;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          transition: background 0.15s, border-color 0.15s;
+        }
+        .settings-btn-primary:hover { background: #1A1AFF; border-color: #1A1AFF; }
+        .settings-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .settings-toggle {
+          position: relative;
+          width: 44px;
+          height: 24px;
+          border-radius: 2px;
+          border: 1px solid #E5E5E5;
+          background: #F0F0F0;
+          cursor: pointer;
+          transition: background 0.15s, border-color 0.15s;
+        }
+        .settings-toggle.on { background: #0A0A0A; border-color: #0A0A0A; }
+        .settings-toggle-knob {
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          width: 18px;
+          height: 18px;
+          background: #fff;
+          border-radius: 1px;
+          transition: transform 0.15s;
+        }
+        .settings-toggle.on .settings-toggle-knob { transform: translateX(20px); }
+
+        .settings-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 0;
+        }
+      `}</style>
+
+      <div style={{ marginBottom: 40 }}>
+        <p className="settings-section-label" style={{ marginBottom: 12 }}>Account</p>
+        <h1 className="settings-display-font" style={{ fontSize: 'clamp(26px, 3vw, 34px)', fontWeight: 800, letterSpacing: '-0.02em', color: '#0A0A0A' }}>
+          Settings
+        </h1>
+        <p style={{ fontSize: 14, color: '#888', marginTop: 8 }}>Manage your account and preferences</p>
       </div>
 
-      <div className="flex gap-6">
+      <div style={{ display: 'flex', gap: 32 }}>
         {/* Sidebar Tabs */}
-        <div className="w-64 flex-shrink-0">
-          <div className="glass-panel p-2 space-y-1">
+        <div style={{ width: 220, flexShrink: 0 }}>
+          <div className="settings-card" style={{ padding: 6 }}>
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-primary-500/10 text-primary-400 border border-primary-500/20'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                  }`}
+                  className={`settings-tab ${activeTab === tab.id ? 'active' : ''}`}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon style={{ width: 16, height: 16 }} />
                   {tab.label}
                 </button>
               );
@@ -118,88 +246,93 @@ const Settings = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1">
+        <div style={{ flex: 1 }}>
           {activeTab === 'profile' && (
-            <div className="glass-panel p-6 space-y-6">
-              <h2 className="text-lg font-semibold text-white">Profile Information</h2>
-              
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">
+            <div className="settings-card" style={{ padding: 36 }}>
+              <p className="settings-section-label" style={{ marginBottom: 8 }}>Profile</p>
+              <h2 className="settings-display-font" style={{ fontSize: 20, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.01em', marginBottom: 28 }}>
+                Profile Information
+              </h2>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
+                <div style={{ width: 64, height: 64, background: '#0A0A0A', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ fontSize: 20, fontWeight: 700, color: '#fff' }}>
                     {user?.firstName?.[0]}{user?.lastName?.[0]}
                   </span>
                 </div>
                 <div>
-                  <p className="text-white font-medium">{user?.firstName} {user?.lastName}</p>
-                  <p className="text-sm text-slate-500">{user?.email}</p>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A' }}>{user?.firstName} {user?.lastName}</p>
+                  <p style={{ fontSize: 13, color: '#888' }}>{user?.email}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="settings-hairline" style={{ marginBottom: 28 }} />
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">First Name</label>
+                  <label className="settings-label">First Name</label>
                   <input
                     type="text"
                     value={profileData.firstName}
                     onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Last Name</label>
+                  <label className="settings-label">Last Name</label>
                   <input
                     type="text"
                     value={profileData.lastName}
                     onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Email</label>
+                  <label className="settings-label">Email</label>
                   <input
                     type="email"
                     value={profileData.email}
                     disabled
-                    className="input-field opacity-50 cursor-not-allowed"
+                    className="settings-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Phone</label>
+                  <label className="settings-label">Phone</label>
                   <input
                     type="tel"
                     value={profileData.phone}
                     onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Company</label>
+                  <label className="settings-label">Company</label>
                   <input
                     type="text"
                     value={profileData.companyName}
                     onChange={(e) => setProfileData({ ...profileData, companyName: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Timezone</label>
+                  <label className="settings-label">Timezone</label>
                   <select
                     value={profileData.timezone}
                     onChange={(e) => setProfileData({ ...profileData, timezone: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                   >
                     {timezones.map(tz => <option key={tz} value={tz}>{tz}</option>)}
                   </select>
                 </div>
               </div>
 
-              <div className="flex justify-end">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 32 }}>
                 <button
                   onClick={handleProfileUpdate}
                   disabled={isLoading}
-                  className="btn-primary flex items-center gap-2"
+                  className="settings-btn-primary"
                 >
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {isLoading ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <Save style={{ width: 14, height: 14 }} />}
                   Save Changes
                 </button>
               </div>
@@ -207,10 +340,13 @@ const Settings = () => {
           )}
 
           {activeTab === 'notifications' && (
-            <div className="glass-panel p-6 space-y-6">
-              <h2 className="text-lg font-semibold text-white">Notification Preferences</h2>
-              
-              <div className="space-y-4">
+            <div className="settings-card" style={{ padding: 36 }}>
+              <p className="settings-section-label" style={{ marginBottom: 8 }}>Notifications</p>
+              <h2 className="settings-display-font" style={{ fontSize: 20, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.01em', marginBottom: 28 }}>
+                Notification Preferences
+              </h2>
+
+              <div>
                 {[
                   { key: 'emailAlerts', label: 'Email Alerts', description: 'Receive email notifications for important events' },
                   { key: 'smsAlerts', label: 'SMS Alerts', description: 'Get text messages for urgent notifications' },
@@ -218,125 +354,131 @@ const Settings = () => {
                   { key: 'weeklyReports', label: 'Weekly Reports', description: 'Receive weekly performance summaries' },
                   { key: 'leadAlerts', label: 'Lead Alerts', description: 'Get notified when a high-value lead is identified' },
                   { key: 'handoffAlerts', label: 'Handoff Alerts', description: 'Notifications when human intervention is needed' },
-                ].map((setting) => (
-                  <div key={setting.key} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
-                    <div>
-                      <p className="text-sm font-medium text-slate-200">{setting.label}</p>
-                      <p className="text-xs text-slate-500">{setting.description}</p>
+                ].map((setting, i) => (
+                  <React.Fragment key={setting.key}>
+                    <div className="settings-row">
+                      <div>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: '#0A0A0A' }}>{setting.label}</p>
+                        <p style={{ fontSize: 12, color: '#888', marginTop: 2 }}>{setting.description}</p>
+                      </div>
+                      <button
+                        onClick={() => setNotificationSettings({
+                          ...notificationSettings,
+                          [setting.key]: !notificationSettings[setting.key]
+                        })}
+                        className={`settings-toggle ${notificationSettings[setting.key] ? 'on' : ''}`}
+                      >
+                        <div className="settings-toggle-knob" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => setNotificationSettings({
-                        ...notificationSettings,
-                        [setting.key]: !notificationSettings[setting.key]
-                      })}
-                      className={`relative w-12 h-6 rounded-full transition-colors ${
-                        notificationSettings[setting.key] ? 'bg-primary-500' : 'bg-slate-700'
-                      }`}
-                    >
-                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                        notificationSettings[setting.key] ? 'translate-x-7' : 'translate-x-1'
-                      }`} />
-                    </button>
-                  </div>
+                    {i < 5 && <div className="settings-hairline" />}
+                  </React.Fragment>
                 ))}
               </div>
             </div>
           )}
 
           {activeTab === 'security' && (
-            <div className="glass-panel p-6 space-y-6">
-              <h2 className="text-lg font-semibold text-white">Change Password</h2>
-              
-              <div className="space-y-4 max-w-md">
+            <div className="settings-card" style={{ padding: 36 }}>
+              <p className="settings-section-label" style={{ marginBottom: 8 }}>Security</p>
+              <h2 className="settings-display-font" style={{ fontSize: 20, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.01em', marginBottom: 28 }}>
+                Change Password
+              </h2>
+
+              <div style={{ maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Current Password</label>
+                  <label className="settings-label">Current Password</label>
                   <input
                     type="password"
                     value={passwordData.currentPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                     placeholder="Enter current password"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">New Password</label>
+                  <label className="settings-label">New Password</label>
                   <input
                     type="password"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                     placeholder="Min 8 characters"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Confirm New Password</label>
+                  <label className="settings-label">Confirm New Password</label>
                   <input
                     type="password"
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                    className="input-field"
+                    className="settings-input"
                     placeholder="Confirm new password"
                   />
                 </div>
-                <button
-                  onClick={handlePasswordChange}
-                  disabled={isLoading}
-                  className="btn-primary flex items-center gap-2"
-                >
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
-                  Update Password
-                </button>
+                <div>
+                  <button
+                    onClick={handlePasswordChange}
+                    disabled={isLoading}
+                    className="settings-btn-primary"
+                  >
+                    {isLoading ? <Loader2 style={{ width: 14, height: 14 }} className="animate-spin" /> : <Shield style={{ width: 14, height: 14 }} />}
+                    Update Password
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
           {activeTab === 'billing' && (
-            <div className="glass-panel p-6 space-y-6">
-              <h2 className="text-lg font-semibold text-white">Billing & Usage</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 bg-slate-800/50 rounded-xl">
-                  <p className="text-sm text-slate-400">Current Plan</p>
-                  <p className="text-xl font-bold text-white mt-1">Pay Per Minute</p>
-                  <p className="text-sm text-primary-400 mt-1">$0.09 / minute</p>
+            <div className="settings-card" style={{ padding: 36 }}>
+              <p className="settings-section-label" style={{ marginBottom: 8 }}>Billing</p>
+              <h2 className="settings-display-font" style={{ fontSize: 20, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.01em', marginBottom: 28 }}>
+                Billing & Usage
+              </h2>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E5E5E5', marginBottom: 28 }}>
+                <div style={{ background: '#fff', padding: '24px 24px' }}>
+                  <p className="settings-section-label">Current Plan</p>
+                  <p className="settings-display-font" style={{ fontSize: 24, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.02em', marginTop: 8 }}>Pay Per Minute</p>
+                  <p style={{ fontSize: 13, color: '#1A1AFF', marginTop: 4, fontWeight: 600 }}>$0.09 / minute</p>
                 </div>
-                <div className="p-4 bg-slate-800/50 rounded-xl">
-                  <p className="text-sm text-slate-400">This Month</p>
-                  <p className="text-xl font-bold text-white mt-1">$124.50</p>
-                  <p className="text-sm text-slate-500 mt-1">1,383 minutes used</p>
+                <div style={{ background: '#fff', padding: '24px 24px' }}>
+                  <p className="settings-section-label">This Month</p>
+                  <p className="settings-display-font" style={{ fontSize: 24, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.02em', marginTop: 8 }}>$124.50</p>
+                  <p style={{ fontSize: 13, color: '#888', marginTop: 4 }}>1,383 minutes used</p>
                 </div>
-                <div className="p-4 bg-slate-800/50 rounded-xl">
-                  <p className="text-sm text-slate-400">Active Agents</p>
-                  <p className="text-xl font-bold text-white mt-1">3</p>
-                  <p className="text-sm text-emerald-400 mt-1">All active</p>
+                <div style={{ background: '#fff', padding: '24px 24px' }}>
+                  <p className="settings-section-label">Active Agents</p>
+                  <p className="settings-display-font" style={{ fontSize: 24, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.02em', marginTop: 8 }}>3</p>
+                  <p style={{ fontSize: 13, color: '#1A8754', marginTop: 4, fontWeight: 600 }}>All active</p>
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-800/50 rounded-xl">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium text-white">Usage Breakdown</h3>
-                  <span className="text-sm text-slate-500">Last 30 days</span>
+              <div style={{ border: '1px solid #E5E5E5', padding: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                  <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A' }}>Usage Breakdown</h3>
+                  <span style={{ fontSize: 12, color: '#888' }}>Last 30 days</span>
                 </div>
-                <div className="space-y-3">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   {[
                     { label: 'Inbound Calls', minutes: 850, cost: 76.50 },
                     { label: 'Outbound Calls', minutes: 320, cost: 28.80 },
                     { label: 'After-Hours', minutes: 213, cost: 19.17 },
                   ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm text-slate-300">{item.label}</span>
-                          <span className="text-sm text-slate-400">{item.minutes} min</span>
+                    <div key={item.label} style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                          <span style={{ fontSize: 13, color: '#333' }}>{item.label}</span>
+                          <span style={{ fontSize: 12, color: '#888' }}>{item.minutes} min</span>
                         </div>
-                        <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div style={{ width: '100%', height: 4, background: '#F0F0F0', borderRadius: 2, overflow: 'hidden' }}>
                           <div 
-                            className="h-full bg-primary-500 rounded-full"
-                            style={{ width: `${(item.minutes / 850) * 100}%` }}
+                            style={{ height: '100%', background: '#1A1AFF', borderRadius: 2, width: `${(item.minutes / 850) * 100}%` }}
                           />
                         </div>
                       </div>
-                      <span className="ml-4 text-sm font-medium text-white w-16 text-right">
+                      <span style={{ marginLeft: 20, fontSize: 13, fontWeight: 600, color: '#0A0A0A', width: 64, textAlign: 'right' }}>
                         ${item.cost.toFixed(2)}
                       </span>
                     </div>
@@ -352,4 +494,3 @@ const Settings = () => {
 };
 
 export default Settings;
-

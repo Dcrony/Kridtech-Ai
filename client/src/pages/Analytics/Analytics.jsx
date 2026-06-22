@@ -1,23 +1,56 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { 
-  BarChart3, 
-  TrendingUp, 
-  Users, 
-  Phone, 
-  CalendarCheck, 
-  Target,
-  ArrowUpRight,
-  ArrowDownRight
+  Phone, TrendingUp, CalendarCheck, Target,
+  ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area
+  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import api from '../../services/api';
 
-const COLORS = ['#3b82f6', '#d946ef', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+const PERIODS = [
+  { key: '24h', label: '24 Hours' },
+  { key: '7d', label: '7 Days' },
+  { key: '30d', label: '30 Days' },
+  { key: '90d', label: '90 Days' },
+];
+
+const PIE_COLORS = ['#0A0A0A', '#555', '#999', '#CCC', '#E5E5E5'];
+
+const chartTooltipStyle = {
+  contentStyle: { background: '#0A0A0A', border: '1px solid #222', borderRadius: 3, fontFamily: 'Inter, sans-serif', fontSize: 12 },
+  itemStyle: { color: '#fff' },
+  labelStyle: { color: '#888' },
+  cursor: { stroke: '#E5E5E5', strokeWidth: 1 },
+};
+
+const StatCard = ({ title, value, change, changeType, icon: Icon }) => (
+  <div style={{ background: '#fff', border: '1px solid #E5E5E5', borderRadius: 3, padding: '24px 24px 20px' }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ width: 34, height: 34, background: '#0A0A0A', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon style={{ width: 15, height: 15, color: '#fff' }} />
+      </div>
+      {change && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, fontWeight: 600, color: changeType === 'up' ? '#16A34A' : '#DC2626' }}>
+          {changeType === 'up' ? <ArrowUpRight style={{ width: 13, height: 13 }} /> : <ArrowDownRight style={{ width: 13, height: 13 }} />}
+          {change}%
+        </div>
+      )}
+    </div>
+    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 6 }}>{title}</p>
+    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em' }}>{value}</p>
+  </div>
+);
+
+const SectionCard = ({ title, children, style = {} }) => (
+  <div style={{ background: '#fff', border: '1px solid #E5E5E5', borderRadius: 3, padding: 24, ...style }}>
+    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 4 }}>Chart</p>
+    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 17, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 20 }}>{title}</p>
+    {children}
+  </div>
+);
 
 const Analytics = () => {
   const [period, setPeriod] = useState('7d');
@@ -46,211 +79,160 @@ const Analytics = () => {
     },
   });
 
-  const sentimentData = dashboard?.sentimentBreakdown ? 
-    Object.entries(dashboard.sentimentBreakdown).map(([name, value]) => ({ name, value })) : [];
+  const sentimentData = dashboard?.sentimentBreakdown
+    ? Object.entries(dashboard.sentimentBreakdown).map(([name, value]) => ({ name, value }))
+    : [{ name: 'Positive', value: 60 }, { name: 'Neutral', value: 25 }, { name: 'Negative', value: 15 }];
 
-  const statusData = dashboard?.callsByStatus ?
-    Object.entries(dashboard.callsByStatus).map(([name, value]) => ({ name, value })) : [];
-
-  const StatCard = ({ title, value, change, changeType, icon: Icon }) => (
-    <div className="stat-card">
-      <div className="flex items-start justify-between mb-4">
-        <div className="p-3 bg-primary-500/10 rounded-xl">
-          <Icon className="w-5 h-5 text-primary-400" />
-        </div>
-        {change && (
-          <div className={`flex items-center gap-1 text-sm font-medium ${changeType === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {changeType === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-            {change}%
-          </div>
-        )}
-      </div>
-      <h3 className="text-slate-400 text-sm font-medium mb-1">{title}</h3>
-      <p className="text-2xl font-bold text-white">{value}</p>
-    </div>
-  );
+  const statusData = dashboard?.callsByStatus
+    ? Object.entries(dashboard.callsByStatus).map(([name, value]) => ({ name, value }))
+    : [];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div style={{ fontFamily: "'Inter', sans-serif", padding: 28, background: '#F7F7F7', minHeight: '100%' }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+        .vo-period-btn { background: none; border: 1px solid #E5E5E5; border-radius: 3px; padding: 7px 14px; font-size: 12px; font-weight: 600; color: #aaa; cursor: pointer; font-family: Inter, sans-serif; transition: all 0.15s; }
+        .vo-period-btn:hover { border-color: #0A0A0A; color: #0A0A0A; }
+        .vo-period-btn.active { background: #0A0A0A; border-color: #0A0A0A; color: #fff; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-white">Analytics</h1>
-          <p className="text-slate-400 mt-1">Deep insights into your AI agent performance</p>
+          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 2 }}>Analytics</h1>
+          <p style={{ fontSize: 13, color: '#aaa' }}>Deep insights into your AI agent performance</p>
         </div>
-        <div className="flex bg-slate-800 rounded-lg p-1">
-          {['24h', '7d', '30d', '90d'].map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                period === p ? 'bg-primary-500 text-white' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              {p === '24h' ? '24 Hours' : p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : '90 Days'}
+        <div style={{ display: 'flex', gap: 6 }}>
+          {PERIODS.map((p) => (
+            <button key={p.key} onClick={() => setPeriod(p.key)} className={`vo-period-btn${period === p.key ? ' active' : ''}`}>
+              {p.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stat cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: '#E5E5E5', marginBottom: 24 }}>
         <StatCard title="Total Calls" value={dashboard?.overview?.totalCalls || 0} icon={Phone} />
         <StatCard title="Qualified Leads" value={dashboard?.overview?.qualifiedLeads || 0} icon={Target} />
         <StatCard title="Appointments" value={dashboard?.overview?.totalAppointments || 0} icon={CalendarCheck} />
         <StatCard title="Conversion Rate" value={`${dashboard?.overview?.conversionRate || 0}%`} icon={TrendingUp} />
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Call Volume */}
-        <div className="glass-panel p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Call Volume</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={trends || []}>
+      {/* Row 1 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+        <SectionCard title="Call Volume Over Time">
+          <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={trends || []} margin={{ left: -20, right: 0 }}>
               <defs>
-                <linearGradient id="colorCalls" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                <linearGradient id="fillCalls2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#0A0A0A" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="#0A0A0A" stopOpacity={0} />
                 </linearGradient>
-                <linearGradient id="colorMinutes" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#d946ef" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#d946ef" stopOpacity={0}/>
+                <linearGradient id="fillMinutes2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#1A1AFF" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="#1A1AFF" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px' }}
-                itemStyle={{ color: '#e2e8f0' }}
-              />
-              <Area type="monotone" dataKey="calls" stroke="#3b82f6" fillOpacity={1} fill="url(#colorCalls)" strokeWidth={2} />
-              <Area type="monotone" dataKey="minutes" stroke="#d946ef" fillOpacity={1} fill="url(#colorMinutes)" strokeWidth={2} />
+              <CartesianGrid strokeDasharray="2 4" stroke="#F0F0F0" vertical={false} />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#bbb', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#bbb', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <Tooltip {...chartTooltipStyle} />
+              <Area type="monotone" dataKey="calls" stroke="#0A0A0A" strokeWidth={2} fill="url(#fillCalls2)" dot={false} activeDot={{ r: 3, fill: '#0A0A0A', strokeWidth: 0 }} />
+              <Area type="monotone" dataKey="minutes" stroke="#1A1AFF" strokeWidth={2} fill="url(#fillMinutes2)" dot={false} activeDot={{ r: 3, fill: '#1A1AFF', strokeWidth: 0 }} />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
-
-        {/* Sentiment Distribution */}
-        <div className="glass-panel p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Sentiment Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={sentimentData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {sentimentData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px' }}
-                itemStyle={{ color: '#e2e8f0' }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="flex justify-center gap-4 mt-4">
-            {sentimentData.map((entry, index) => (
-              <div key={entry.name} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                <span className="text-sm text-slate-400 capitalize">{entry.name}</span>
+          <div style={{ display: 'flex', gap: 20, marginTop: 12 }}>
+            {[['#0A0A0A', 'Calls'], ['#1A1AFF', 'Minutes']].map(([color, label]) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <div style={{ width: 20, height: 2, background: color, borderRadius: 2 }} />
+                <span style={{ fontSize: 11, color: '#aaa', fontWeight: 500 }}>{label}</span>
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
+
+        <SectionCard title="Sentiment Distribution">
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie data={sentimentData} cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={3} dataKey="value">
+                {sentimentData.map((_, index) => (
+                  <Cell key={index} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip {...chartTooltipStyle} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 8 }}>
+            {sentimentData.map((entry, index) => (
+              <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: PIE_COLORS[index % PIE_COLORS.length], border: index === PIE_COLORS.length - 1 ? '1px solid #E5E5E5' : 'none' }} />
+                <span style={{ fontSize: 11, color: '#888', textTransform: 'capitalize', fontWeight: 500 }}>{entry.name}</span>
+              </div>
+            ))}
+          </div>
+        </SectionCard>
       </div>
 
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Call Status */}
-        <div className="glass-panel p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Call Status Breakdown</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={statusData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px' }}
-                itemStyle={{ color: '#e2e8f0' }}
-              />
-              <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+      {/* Row 2 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+        <SectionCard title="Call Status Breakdown">
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={statusData} margin={{ left: -20, right: 0 }}>
+              <CartesianGrid strokeDasharray="2 4" stroke="#F0F0F0" vertical={false} />
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#bbb', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#bbb', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <Tooltip {...chartTooltipStyle} />
+              <Bar dataKey="value" fill="#0A0A0A" radius={[2, 2, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>
-        </div>
+        </SectionCard>
 
-        {/* Lead Pipeline */}
-        <div className="glass-panel p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Lead Pipeline</h3>
-          {leadAnalytics?.conversionFunnel && (
-            <div className="space-y-4">
+        <SectionCard title="Lead Pipeline">
+          {leadAnalytics?.conversionFunnel ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {leadAnalytics.conversionFunnel.map((stage, idx) => {
                 const maxCount = Math.max(...leadAnalytics.conversionFunnel.map(s => s.count));
-                const percentage = maxCount > 0 ? (stage.count / maxCount) * 100 : 0;
+                const pct = maxCount > 0 ? (stage.count / maxCount) * 100 : 0;
                 return (
                   <div key={stage.status}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-300 capitalize">{stage.status}</span>
-                      <span className="text-sm font-medium text-white">{stage.count}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span style={{ fontSize: 12, color: '#555', textTransform: 'capitalize', fontWeight: 500 }}>{stage.status}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: '#0A0A0A' }}>{stage.count}</span>
                     </div>
-                    <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ 
-                          width: `${percentage}%`,
-                          backgroundColor: COLORS[idx % COLORS.length]
-                        }}
-                      />
+                    <div style={{ height: 6, background: '#F0F0F0', borderRadius: 2, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: idx === 0 ? '#0A0A0A' : idx === 1 ? '#555' : '#999', borderRadius: 2, transition: 'width 0.5s ease' }} />
                     </div>
                   </div>
                 );
               })}
             </div>
+          ) : (
+            <p style={{ fontSize: 13, color: '#ccc', textAlign: 'center', padding: '40px 0' }}>No funnel data</p>
           )}
-        </div>
+        </SectionCard>
       </div>
 
-      {/* Lead Analytics */}
+      {/* Lead Analytics Row */}
       {leadAnalytics && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="glass-panel p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Leads by Status</h3>
-            <div className="space-y-3">
-              {Object.entries(leadAnalytics.byStatus || {}).map(([status, count]) => (
-                <div key={status} className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400 capitalize">{status}</span>
-                  <span className="text-sm font-medium text-white">{count}</span>
-                </div>
-              ))}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E5E5E5' }}>
+          {[
+            { title: 'Leads by Status', data: leadAnalytics.byStatus },
+            { title: 'Leads by Source', data: leadAnalytics.bySource, format: (k) => k.replace('_', ' ') },
+            { title: 'Leads by Score', data: leadAnalytics.byScore },
+          ].map(({ title, data, format }) => (
+            <div key={title} style={{ background: '#fff', padding: 24 }}>
+              <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 4 }}>Breakdown</p>
+              <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 16, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 20 }}>{title}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {Object.entries(data || {}).map(([key, count]) => (
+                  <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid #F0F0F0' }}>
+                    <span style={{ fontSize: 12, color: '#555', textTransform: 'capitalize', fontWeight: 500 }}>{format ? format(key) : key}</span>
+                    <span style={{ fontFamily: "'Syne', sans-serif", fontSize: 16, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em' }}>{count}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="glass-panel p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Leads by Source</h3>
-            <div className="space-y-3">
-              {Object.entries(leadAnalytics.bySource || {}).map(([source, count]) => (
-                <div key={source} className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400 capitalize">{source.replace('_', ' ')}</span>
-                  <span className="text-sm font-medium text-white">{count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="glass-panel p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Leads by Score</h3>
-            <div className="space-y-3">
-              {Object.entries(leadAnalytics.byScore || {}).map(([score, count]) => (
-                <div key={score} className="flex items-center justify-between">
-                  <span className="text-sm text-slate-400 capitalize">{score}</span>
-                  <span className="text-sm font-medium text-white">{count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       )}
     </div>

@@ -11,26 +11,44 @@ import {
   ArrowDownRight,
   Bot
 } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '../../services/api';
 
-const StatCard = ({ title, value, change, changeType, icon: Icon, color }) => (
-  <div className="stat-card">
-    <div className="flex items-start justify-between mb-4">
-      <div className={`p-3 rounded-xl ${color}`}>
-        <Icon className="w-5 h-5 text-white" />
+const StatCard = ({ title, value, change, changeType, icon: Icon }) => (
+  <div style={{
+    background: '#fff',
+    border: '1px solid #E5E5E5',
+    borderRadius: 3,
+    padding: '24px 24px 20px',
+    fontFamily: "'Inter', sans-serif",
+  }}>
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ width: 34, height: 34, background: '#0A0A0A', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon style={{ width: 15, height: 15, color: '#fff' }} />
       </div>
       {change && (
-        <div className={`flex items-center gap-1 text-sm font-medium ${changeType === 'up' ? 'text-emerald-400' : 'text-rose-400'}`}>
-          {changeType === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12, fontWeight: 600, color: changeType === 'up' ? '#16A34A' : '#DC2626' }}>
+          {changeType === 'up' ? <ArrowUpRight style={{ width: 13, height: 13 }} /> : <ArrowDownRight style={{ width: 13, height: 13 }} />}
           {change}%
         </div>
       )}
     </div>
-    <h3 className="text-slate-400 text-sm font-medium mb-1">{title}</h3>
-    <p className="text-2xl font-bold text-white">{value}</p>
+    <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 6 }}>{title}</p>
+    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em' }}>{value}</p>
   </div>
 );
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{ background: '#0A0A0A', border: '1px solid #222', borderRadius: 3, padding: '10px 14px', fontFamily: "'Inter', sans-serif" }}>
+        <p style={{ fontSize: 11, color: '#666', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</p>
+        <p style={{ fontSize: 16, fontWeight: 700, color: '#fff' }}>{payload[0].value} calls</p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const Dashboard = () => {
   const { data: metrics } = useQuery({
@@ -59,147 +77,147 @@ const Dashboard = () => {
   });
 
   const chartData = metrics?.callsOverTime || [
-    { date: 'Mon', calls: 12, minutes: 45 },
-    { date: 'Tue', calls: 19, minutes: 78 },
-    { date: 'Wed', calls: 15, minutes: 62 },
-    { date: 'Thu', calls: 22, minutes: 95 },
-    { date: 'Fri', calls: 28, minutes: 120 },
-    { date: 'Sat', calls: 16, minutes: 55 },
-    { date: 'Sun', calls: 14, minutes: 48 },
+    { date: 'Mon', calls: 12 },
+    { date: 'Tue', calls: 19 },
+    { date: 'Wed', calls: 15 },
+    { date: 'Thu', calls: 22 },
+    { date: 'Fri', calls: 28 },
+    { date: 'Sat', calls: 16 },
+    { date: 'Sun', calls: 14 },
+  ];
+
+  const agents = [
+    { name: 'Receptionist Sarah', type: 'Inbound', calls: 156, success: '87%' },
+    { name: 'Sales Alex', type: 'Outbound', calls: 89, success: '72%' },
+    { name: 'Support Mike', type: 'Support', calls: 203, success: '91%' },
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div style={{ fontFamily: "'Inter', sans-serif", padding: 28, background: '#F7F7F7', minHeight: '100%' }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');`}</style>
+
+      {/* Page header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-slate-400 mt-1">Overview of your AI phone agent performance</p>
+          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 2 }}>Dashboard</h1>
+          <p style={{ fontSize: 13, color: '#aaa' }}>Overview of your AI phone agent performance</p>
         </div>
-        <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-          <Activity className="w-4 h-4 text-emerald-400" />
-          <span className="text-sm font-medium text-emerald-400">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '7px 13px', background: '#fff', border: '1px solid #E5E5E5', borderRadius: 3 }}>
+          <div style={{ width: 6, height: 6, background: '#22C55E', borderRadius: '50%' }} />
+          <Activity style={{ width: 13, height: 13, color: '#22C55E' }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: '#22C55E' }}>
             {realTime?.activeCalls || 0} Active Calls
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard 
-          title="Total Calls" 
-          value={metrics?.overview?.totalCalls || 0} 
-          change="12.5" 
-          changeType="up"
-          icon={Phone}
-          color="bg-primary-600"
-        />
-        <StatCard 
-          title="Qualified Leads" 
-          value={metrics?.overview?.qualifiedLeads || 0} 
-          change="8.2" 
-          changeType="up"
-          icon={Users}
-          color="bg-accent-600"
-        />
-        <StatCard 
-          title="Appointments" 
-          value={metrics?.overview?.totalAppointments || 0} 
-          change="3.1" 
-          changeType="down"
-          icon={CalendarCheck}
-          color="bg-emerald-600"
-        />
-        <StatCard 
-          title="Conversion Rate" 
-          value={`${metrics?.overview?.conversionRate || 0}%`} 
-          change="5.4" 
-          changeType="up"
-          icon={TrendingUp}
-          color="bg-amber-600"
-        />
+      {/* Stat cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: '#E5E5E5', marginBottom: 24 }}>
+        <StatCard title="Total Calls" value={metrics?.overview?.totalCalls || 0} change="12.5" changeType="up" icon={Phone} />
+        <StatCard title="Qualified Leads" value={metrics?.overview?.qualifiedLeads || 0} change="8.2" changeType="up" icon={Users} />
+        <StatCard title="Appointments" value={metrics?.overview?.totalAppointments || 0} change="3.1" changeType="down" icon={CalendarCheck} />
+        <StatCard title="Conversion Rate" value={`${metrics?.overview?.conversionRate || 0}%`} change="5.4" changeType="up" icon={TrendingUp} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 glass-panel p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-white">Call Volume</h3>
-            <select className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-300">
+      {/* Chart + Appointments */}
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16, marginBottom: 16 }}>
+        {/* Chart */}
+        <div style={{ background: '#fff', border: '1px solid #E5E5E5', borderRadius: 3, padding: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 4 }}>Call Volume</p>
+              <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em' }}>7-Day Overview</p>
+            </div>
+            <select style={{ fontSize: 12, color: '#555', background: '#F7F7F7', border: '1px solid #E5E5E5', borderRadius: 3, padding: '6px 10px', cursor: 'pointer' }}>
               <option>Last 7 Days</option>
               <option>Last 30 Days</option>
               <option>Last 90 Days</option>
             </select>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={chartData}>
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
               <defs>
-                <linearGradient id="colorCalls" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                <linearGradient id="fillCalls" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#0A0A0A" stopOpacity={0.08} />
+                  <stop offset="95%" stopColor="#0A0A0A" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '12px' }}
-                itemStyle={{ color: '#e2e8f0' }}
-              />
-              <Area type="monotone" dataKey="calls" stroke="#3b82f6" fillOpacity={1} fill="url(#colorCalls)" strokeWidth={2} />
+              <CartesianGrid strokeDasharray="2 4" stroke="#F0F0F0" vertical={false} />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#bbb', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#bbb', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#E5E5E5', strokeWidth: 1 }} />
+              <Area type="monotone" dataKey="calls" stroke="#0A0A0A" strokeWidth={2} fill="url(#fillCalls)" dot={false} activeDot={{ r: 4, fill: '#0A0A0A', strokeWidth: 0 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="glass-panel p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Upcoming Appointments</h3>
-          <div className="space-y-4">
+        {/* Upcoming appointments */}
+        <div style={{ background: '#fff', border: '1px solid #E5E5E5', borderRadius: 3, padding: 24 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 4 }}>Upcoming</p>
+          <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 20 }}>Appointments</p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {upcoming?.map((apt) => (
-              <div key={apt.id} className="flex items-start gap-3 p-3 bg-slate-800/50 rounded-xl">
-                <div className="w-10 h-10 bg-primary-500/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-4 h-4 text-primary-400" />
+              <div key={apt.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '12px', background: '#F7F7F7', borderRadius: 2 }}>
+                <div style={{ width: 30, height: 30, background: '#0A0A0A', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Clock style={{ width: 13, height: 13, color: '#fff' }} />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-200 truncate">{apt.title}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    {new Date(apt.scheduledDate).toLocaleDateString('en-US', { 
-                      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-                    })}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#0A0A0A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{apt.title}</p>
+                  <p style={{ fontSize: 11, color: '#aaa', marginTop: 2 }}>
+                    {new Date(apt.scheduledDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
-                <span className={`badge ${apt.status === 'confirmed' ? 'badge-success' : 'badge-info'}`}>
+                <span style={{
+                  fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+                  background: apt.status === 'confirmed' ? '#F0FFF4' : '#F0F0F0',
+                  color: apt.status === 'confirmed' ? '#16A34A' : '#888',
+                  padding: '3px 8px', borderRadius: 2,
+                }}>
                   {apt.status}
                 </span>
               </div>
             ))}
             {(!upcoming || upcoming.length === 0) && (
-              <p className="text-sm text-slate-500 text-center py-8">No upcoming appointments</p>
+              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <CalendarCheck style={{ width: 24, height: 24, color: '#E5E5E5', margin: '0 auto 8px' }} />
+                <p style={{ fontSize: 13, color: '#ccc' }}>No upcoming appointments</p>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="glass-panel p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Active Agents</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { name: 'Receptionist Sarah', type: 'Inbound', status: 'active', calls: 156, success: '87%' },
-            { name: 'Sales Alex', type: 'Outbound', status: 'active', calls: 89, success: '72%' },
-            { name: 'Support Mike', type: 'Support', status: 'active', calls: 203, success: '91%' },
-          ].map((agent) => (
-            <div key={agent.name} className="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
-                    <Bot className="w-5 h-5 text-white" />
+      {/* Active Agents */}
+      <div style={{ background: '#fff', border: '1px solid #E5E5E5', borderRadius: 3, padding: 24 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#aaa', marginBottom: 4 }}>Status</p>
+        <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 20 }}>Active Agents</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E5E5E5' }}>
+          {agents.map((agent) => (
+            <div key={agent.name} style={{ background: '#fff', padding: '20px 20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 36, height: 36, background: '#0A0A0A', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Bot style={{ width: 16, height: 16, color: '#fff' }} />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-200">{agent.name}</p>
-                    <p className="text-xs text-slate-500">{agent.type}</p>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#0A0A0A' }}>{agent.name}</p>
+                    <p style={{ fontSize: 11, color: '#aaa', marginTop: 1 }}>{agent.type}</p>
                   </div>
                 </div>
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <div style={{ width: 6, height: 6, background: '#22C55E', borderRadius: '50%' }} />
+                  <span style={{ fontSize: 10, color: '#22C55E', fontWeight: 600 }}>Live</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{agent.calls} calls</span>
-                <span className="text-emerald-400 font-medium">{agent.success} success</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 14, borderTop: '1px solid #F0F0F0' }}>
+                <div>
+                  <p style={{ fontSize: 10, color: '#bbb', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 2 }}>Calls</p>
+                  <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em' }}>{agent.calls}</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: 10, color: '#bbb', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 2 }}>Success</p>
+                  <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: '#1A1AFF', letterSpacing: '-0.03em' }}>{agent.success}</p>
+                </div>
               </div>
             </div>
           ))}

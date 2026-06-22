@@ -4,9 +4,15 @@ import { Link } from 'react-router-dom';
 import { Plus, Bot, Phone, TrendingUp, MoreVertical, Pause, Play, Trash2 } from 'lucide-react';
 import api from '../../services/api';
 
+const STATUS_STYLES = {
+  active:  { bg: '#F0FFF4', color: '#16A34A' },
+  paused:  { bg: '#FFFBEB', color: '#D97706' },
+  draft:   { bg: '#F0F0F0', color: '#888' },
+};
+
 const Agents = () => {
   const [filter, setFilter] = useState('all');
-  
+
   const { data: agents, refetch } = useQuery({
     queryKey: ['agents', filter],
     queryFn: async () => {
@@ -23,96 +29,111 @@ const Agents = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div style={{ fontFamily: "'Inter', sans-serif", padding: 28, background: '#F7F7F7', minHeight: '100%' }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+        .vo-filter-btn { background: none; border: 1px solid #E5E5E5; borderRadius: 3px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: #aaa; cursor: pointer; font-family: Inter, sans-serif; transition: all 0.15s; border-radius: 3px; }
+        .vo-filter-btn:hover { border-color: #0A0A0A; color: #0A0A0A; }
+        .vo-filter-btn.active { background: #0A0A0A; border-color: #0A0A0A; color: #fff; }
+        .vo-agent-card { background: #fff; border: 1px solid #E5E5E5; border-radius: 3px; padding: 22px; transition: border-color 0.15s; }
+        .vo-agent-card:hover { border-color: #0A0A0A; }
+        .vo-pause-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px; background: #F7F7F7; border: 1px solid #E5E5E5; border-radius: 3px; font-size: 12px; font-weight: 600; color: #555; cursor: pointer; font-family: Inter, sans-serif; transition: all 0.15s; }
+        .vo-pause-btn:hover { background: #0A0A0A; border-color: #0A0A0A; color: #fff; }
+        .vo-config-link { flex: 1; display: flex; align-items: center; justify-content: center; padding: 9px; background: #0A0A0A; border-radius: 3px; font-size: 12px; font-weight: 600; color: #fff; text-decoration: none; transition: background 0.15s; }
+        .vo-config-link:hover { background: #1A1AFF; }
+        .vo-more-btn { background: none; border: none; cursor: pointer; color: #ccc; padding: 5px; border-radius: 3px; display: flex; transition: all 0.15s; }
+        .vo-more-btn:hover { background: #F0F0F0; color: #0A0A0A; }
+        .vo-create-btn { display: flex; align-items: center; gap: 7px; padding: 9px 18px; background: #0A0A0A; color: #fff; border: 2px solid #0A0A0A; border-radius: 3px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; font-family: Inter, sans-serif; transition: background 0.15s; }
+        .vo-create-btn:hover { background: #1A1AFF; border-color: #1A1AFF; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-white">AI Agents</h1>
-          <p className="text-slate-400 mt-1">Manage your voice AI agents</p>
+          <h1 style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 2 }}>AI Agents</h1>
+          <p style={{ fontSize: 13, color: '#aaa' }}>Manage your voice AI agents</p>
         </div>
-        <Link to="/agents/new" className="btn-primary flex items-center gap-2">
-          <Plus className="w-4 h-4" />
+        <Link to="/agents/new" className="vo-create-btn">
+          <Plus style={{ width: 15, height: 15 }} />
           Create Agent
         </Link>
       </div>
 
-      <div className="flex items-center gap-2">
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 20 }}>
         {['all', 'active', 'paused', 'draft'].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              filter === status 
-                ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-            }`}
-          >
+          <button key={status} onClick={() => setFilter(status)} className={`vo-filter-btn${filter === status ? ' active' : ''}`}>
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {agents?.map((agent) => (
-          <div key={agent.id} className="glass-panel p-6 group hover:border-slate-600 transition-all">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-white" />
+      {/* Agent grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+        {agents?.map((agent) => {
+          const statusStyle = STATUS_STYLES[agent.status] || STATUS_STYLES.draft;
+          return (
+            <div key={agent.id} className="vo-agent-card">
+              {/* Card header */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 40, height: 40, background: '#0A0A0A', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Bot style={{ width: 18, height: 18, color: '#fff' }} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A', marginBottom: 4 }}>{agent.name}</p>
+                    <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', background: statusStyle.bg, color: statusStyle.color, padding: '2px 8px', borderRadius: 2 }}>
+                      {agent.status}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-white">{agent.name}</h3>
-                  <span className={`badge ${
-                    agent.status === 'active' ? 'badge-success' : 
-                    agent.status === 'paused' ? 'badge-warning' : 'badge-info'
-                  }`}>
-                    {agent.status}
-                  </span>
-                </div>
+                <button className="vo-more-btn">
+                  <MoreVertical style={{ width: 14, height: 14 }} />
+                </button>
               </div>
-              <button className="p-1.5 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-800">
-                <MoreVertical className="w-4 h-4" />
-              </button>
-            </div>
 
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center">
-                <Phone className="w-4 h-4 text-slate-500 mx-auto mb-1" />
-                <p className="text-lg font-bold text-white">{agent.totalCallsHandled}</p>
-                <p className="text-xs text-slate-500">Calls</p>
+              {/* Stats row */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E5E5E5', marginBottom: 16 }}>
+                {[
+                  { icon: Phone, value: agent.totalCallsHandled, label: 'Calls' },
+                  { icon: TrendingUp, value: `${Math.round(agent.successRate * 100)}%`, label: 'Success' },
+                  { icon: null, value: `${Math.round(agent.totalMinutesUsed)}m`, label: 'Minutes' },
+                ].map(({ icon: Icon, value, label }) => (
+                  <div key={label} style={{ background: '#fff', padding: '14px 10px', textAlign: 'center' }}>
+                    {Icon && <Icon style={{ width: 12, height: 12, color: '#ccc', margin: '0 auto 6px' }} />}
+                    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 18, fontWeight: 800, color: label === 'Success' ? '#1A1AFF' : '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 2 }}>{value}</p>
+                    <p style={{ fontSize: 10, color: '#bbb', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 500 }}>{label}</p>
+                  </div>
+                ))}
               </div>
-              <div className="text-center">
-                <TrendingUp className="w-4 h-4 text-slate-500 mx-auto mb-1" />
-                <p className="text-lg font-bold text-white">{Math.round(agent.successRate * 100)}%</p>
-                <p className="text-xs text-slate-500">Success</p>
-              </div>
-              <div className="text-center">
-                <div className="w-4 h-4 rounded-full bg-emerald-500/20 mx-auto mb-1" />
-                <p className="text-lg font-bold text-white">{Math.round(agent.totalMinutesUsed)}m</p>
-                <p className="text-xs text-slate-500">Minutes</p>
-              </div>
-            </div>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => toggleAgentStatus(agent.id, agent.status)}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${
-                  agent.status === 'active' 
-                    ? 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20' 
-                    : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-                }`}
-              >
-                {agent.status === 'active' ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                {agent.status === 'active' ? 'Pause' : 'Activate'}
-              </button>
-              <Link 
-                to={`/agents/${agent.id}`}
-                className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-medium text-center transition-all"
-              >
-                Configure
-              </Link>
+              {/* Actions */}
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={() => toggleAgentStatus(agent.id, agent.status)} className="vo-pause-btn">
+                  {agent.status === 'active'
+                    ? <><Pause style={{ width: 13, height: 13 }} /> Pause</>
+                    : <><Play style={{ width: 13, height: 13 }} /> Activate</>
+                  }
+                </button>
+                <Link to={`/agents/${agent.id}`} className="vo-config-link">Configure</Link>
+              </div>
             </div>
+          );
+        })}
+
+        {/* Empty state */}
+        {(!agents || agents.length === 0) && (
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '80px 0' }}>
+            <div style={{ width: 48, height: 48, background: '#F0F0F0', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Bot style={{ width: 20, height: 20, color: '#ccc' }} />
+            </div>
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A', marginBottom: 6 }}>No agents yet</p>
+            <p style={{ fontSize: 13, color: '#aaa', marginBottom: 20 }}>Create your first AI agent to get started</p>
+            <Link to="/agents/new" className="vo-create-btn" style={{ display: 'inline-flex' }}>
+              <Plus style={{ width: 15, height: 15 }} /> Create Agent
+            </Link>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

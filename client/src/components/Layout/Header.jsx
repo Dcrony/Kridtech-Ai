@@ -14,34 +14,92 @@ const Header = () => {
   });
 
   return (
-    <header className="h-16 bg-slate-900/60 backdrop-blur-xl border-b border-slate-800 flex items-center justify-between px-6">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="relative w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-          <input 
-            type="text" 
-            placeholder="Search calls, leads, transcripts..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        .vo-search:focus {
+          outline: none;
+          border-color: #0A0A0A !important;
+          background: #fff !important;
+        }
+        .vo-search::placeholder { color: #bbb; }
+        .vo-bell:hover { color: #0A0A0A !important; background: #F0F0F0; border-radius: 3px; }
+      `}</style>
+
+      <header style={{
+        height: 52,
+        background: '#fff',
+        borderBottom: '1px solid #E5E5E5',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 24px',
+        fontFamily: "'Inter', sans-serif",
+        flexShrink: 0,
+      }}>
+        {/* Search */}
+        <div style={{ position: 'relative', width: 340 }}>
+          <Search style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, color: '#ccc' }} />
+          <input
+            type="text"
+            placeholder="Search calls, leads, transcripts…"
+            className="vo-search"
+            style={{
+              width: '100%',
+              paddingLeft: 34,
+              paddingRight: 12,
+              paddingTop: 7,
+              paddingBottom: 7,
+              fontSize: 13,
+              color: '#0A0A0A',
+              background: '#F7F7F7',
+              border: '1px solid #E5E5E5',
+              borderRadius: 3,
+              boxSizing: 'border-box',
+              transition: 'border-color 0.15s, background 0.15s',
+            }}
           />
         </div>
-      </div>
 
-      <div className="flex items-center gap-4">
-        <button className="relative p-2 text-slate-400 hover:text-slate-200 transition-colors">
-          <Bell className="w-5 h-5" />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </button>
-        <div className="h-8 w-px bg-slate-700" />
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          <span className="text-sm text-emerald-400 font-medium">System Online</span>
+        {/* Right side */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {/* Status indicator */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 6, height: 6, background: '#22C55E', borderRadius: '50%' }} />
+            <span style={{ fontSize: 12, color: '#888', fontWeight: 500 }}>System Online</span>
+          </div>
+
+          <div style={{ width: 1, height: 20, background: '#E5E5E5' }} />
+
+          {/* Bell */}
+          <button
+            className="vo-bell"
+            style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', padding: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }}
+          >
+            <Bell style={{ width: 16, height: 16 }} />
+            {unreadCount > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: 2,
+                right: 2,
+                width: 14,
+                height: 14,
+                background: '#0A0A0A',
+                color: '#fff',
+                fontSize: 9,
+                fontWeight: 700,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </button>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 };
 

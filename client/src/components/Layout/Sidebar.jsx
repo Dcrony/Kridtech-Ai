@@ -30,59 +30,114 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-slate-900/80 backdrop-blur-xl border-r border-slate-800 flex flex-col">
-      <div className="p-6 border-b border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center">
-            <Zap className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-white tracking-tight">VoiceAI</h1>
-            <p className="text-xs text-slate-500">Agent Platform</p>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+        .vo-nav-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 9px 12px;
+          border-radius: 3px;
+          font-size: 13px;
+          font-weight: 500;
+          color: #777;
+          text-decoration: none;
+          transition: color 0.15s, background 0.15s;
+          font-family: 'Inter', sans-serif;
+        }
+        .vo-nav-item:hover {
+          color: #0A0A0A;
+          background: #F0F0F0;
+        }
+        .vo-nav-item.active {
+          color: #0A0A0A;
+          background: #F0F0F0;
+          font-weight: 600;
+        }
+        .vo-nav-item.active svg {
+          color: #1A1AFF;
+        }
+        .vo-signout:hover {
+          background: #FEF2F2 !important;
+          color: #DC2626 !important;
+        }
+      `}</style>
+
+      <aside style={{
+        width: 220,
+        background: '#fff',
+        borderRight: '1px solid #E5E5E5',
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: "'Inter', sans-serif",
+      }}>
+        {/* Logo */}
+        <div style={{ padding: '20px 20px 18px', borderBottom: '1px solid #E5E5E5' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+            <div style={{ width: 28, height: 28, background: '#0A0A0A', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Zap style={{ width: 13, height: 13, color: '#fff' }} />
+            </div>
+            <div>
+              <p style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.02em', lineHeight: 1 }}>VoiceAI</p>
+              <p style={{ fontSize: 10, color: '#bbb', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 500, marginTop: 2 }}>Agent Platform</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = location.pathname.startsWith(item.path);
-          return (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={`nav-item ${isActive ? 'active' : ''}`}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
-            </NavLink>
-          );
-        })}
-      </nav>
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
+          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: '#ccc', padding: '4px 12px 10px' }}>Main</p>
+          {navItems.slice(0, 6).map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname.startsWith(item.path);
+            return (
+              <NavLink key={item.path} to={item.path} className={`vo-nav-item${isActive ? ' active' : ''}`}>
+                <Icon style={{ width: 15, height: 15, flexShrink: 0 }} />
+                {item.label}
+              </NavLink>
+            );
+          })}
 
-      <div className="p-4 border-t border-slate-800">
-        <div className="flex items-center gap-3 px-4 py-3 mb-3">
-          <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-slate-300">
-              {user?.firstName?.[0]}{user?.lastName?.[0]}
-            </span>
+          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.09em', textTransform: 'uppercase', color: '#ccc', padding: '14px 12px 10px', marginTop: 4 }}>Account</p>
+          {navItems.slice(6).map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname.startsWith(item.path);
+            return (
+              <NavLink key={item.path} to={item.path} className={`vo-nav-item${isActive ? ' active' : ''}`}>
+                <Icon style={{ width: 15, height: 15, flexShrink: 0 }} />
+                {item.label}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* User footer */}
+        <div style={{ borderTop: '1px solid #E5E5E5', padding: '12px 10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', marginBottom: 4 }}>
+            <div style={{ width: 30, height: 30, background: '#0A0A0A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>
+                {user?.firstName?.[0]}{user?.lastName?.[0]}
+              </span>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: '#0A0A0A', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {user?.firstName} {user?.lastName}
+              </p>
+              <p style={{ fontSize: 11, color: '#aaa', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-200 truncate">
-              {user?.firstName} {user?.lastName}
-            </p>
-            <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-          </div>
+          <button
+            onClick={clearAuth}
+            className="vo-signout"
+            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', background: 'none', border: 'none', borderRadius: 3, cursor: 'pointer', fontSize: 13, fontWeight: 500, color: '#aaa', transition: 'all 0.15s' }}
+          >
+            <LogOut style={{ width: 14, height: 14, flexShrink: 0 }} />
+            Sign Out
+          </button>
         </div>
-        <button 
-          onClick={clearAuth}
-          className="w-full flex items-center gap-3 px-4 py-3 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all"
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="font-medium">Sign Out</span>
-        </button>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

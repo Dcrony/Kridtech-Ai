@@ -1,4 +1,4 @@
-const { Notification } = require('../models');
+const Notification  = require('../models/Notification');
 const twilioService = require('./twilioService');
 const { logger } = require('../middleware/errorHandler');
 

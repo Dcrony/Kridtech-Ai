@@ -1,4 +1,7 @@
-const { Lead, Call, AIAgent } = require('../models');
+const AIAgent = require('../models/AIAgent');
+const Call = require('../models/Call');
+const Lead = require('../models/Lead');
+
 const { Op } = require('sequelize');
 const notificationService = require('../services/notificationService');
 

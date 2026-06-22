@@ -1,5 +1,10 @@
 const { Op, fn, col, literal } = require('sequelize');
-const { Call, Appointment, Lead, Metric, AIAgent } = require('../models');
+const Call = require('../models/Call');
+const AIAgent = require('../models/AIAgent');
+const Lead = require('../models/Lead');
+const Appointment = require('../models/Appointment');
+const Metric = require('../models/Metric');
+
 const dayjs = require('dayjs');
 
 class AnalyticsService {

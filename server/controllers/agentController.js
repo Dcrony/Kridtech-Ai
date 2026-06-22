@@ -1,4 +1,8 @@
-const { AIAgent, Call, Appointment, Lead } = require('../models');
+const AIAgent = require('../models/AIAgent');
+const Call = require('../models/Call');
+const Appointment = require('../models/Appointment');
+const Lead = require('../models/Lead');
+
 const { Op } = require('sequelize');
 
 exports.createAgent = async (req, res, next) => {

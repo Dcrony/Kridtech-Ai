@@ -5,8 +5,16 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+
+
 const { sequelize, testConnection } = require('./config/database');
 const { errorHandler } = require('./middleware/errorHandler');
+
+const initAssociations = require('./models/index');
+
+initAssociations();
+
+
 
 // Import routes
 const authRoutes = require('./routes/auth');

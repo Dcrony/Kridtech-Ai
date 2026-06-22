@@ -25,7 +25,7 @@ const validate = (schema) => {
 const schemas = {
   register: Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().min(8).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)/).required()
+    password: Joi.string().min(8).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).required()
       .messages({
         'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
       }),

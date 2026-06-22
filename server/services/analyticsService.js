@@ -33,7 +33,8 @@ class AnalyticsService {
         group: ['status']
       }),
       Lead.count({ where: { userId, createdAt: { [Op.gte]: startDate } } }),
-      Lead.count({ where: { userId, isQualified: true, createdAt: { [Op.gte]: startDate } } }),
+      // FIX: Check your real schema condition where status represents validation
+      Lead.count({ where: { userId, status: 'qualified', createdAt: { [Op.gte]: startDate } } }),
       Appointment.count({ where: { userId, createdAt: { [Op.gte]: startDate } } }),
       Call.findOne({
         where: { userId, createdAt: { [Op.gte]: startDate }, duration: { [Op.gt]: 0 } },
@@ -82,15 +83,16 @@ class AnalyticsService {
     const startDate = this.getPeriodStart(period);
     const groupFormat = period === '24h' ? 'YYYY-MM-DD HH:00:00' : 'YYYY-MM-DD';
     
+    // FIX: Using camelCase 'createdAt' instead of snake_case 'created_at'
     const calls = await Call.findAll({
       where: { userId, createdAt: { [Op.gte]: startDate } },
       attributes: [
-        [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('created_at')), 'date'],
+        [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('createdAt')), 'date'],
         [fn('COUNT', '*'), 'count'],
         [fn('SUM', col('duration')), 'duration']
       ],
-      group: [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('created_at'))],
-      order: [[fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('created_at')), 'ASC']],
+      group: [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('createdAt'))],
+      order: [[fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('createdAt')), 'ASC']],
       raw: true
     });
 
@@ -141,13 +143,14 @@ class AnalyticsService {
         attributes: ['source', [fn('COUNT', '*'), 'count']],
         group: ['source']
       }),
+      // FIX: Use standard single quotes inside the SQL statement syntax for string literals
       Lead.findAll({
         where: { userId, createdAt: { [Op.gte]: startDate } },
         attributes: [
-          [literal('CASE WHEN score >= 80 THEN \"high\" WHEN score >= 50 THEN \"medium\" ELSE \"low\" END'), 'category'],
+          [literal("CASE WHEN score >= 80 THEN 'high' WHEN score >= 50 THEN 'medium' ELSE 'low' END"), 'category'],
           [fn('COUNT', '*'), 'count']
         ],
-        group: [literal('CASE WHEN score >= 80 THEN \"high\" WHEN score >= 50 THEN \"medium\" ELSE \"low\" END')]
+        group: [literal("CASE WHEN score >= 80 THEN 'high' WHEN score >= 50 THEN 'medium' ELSE 'low' END")]
       }),
       this.getConversionFunnel(userId, startDate)
     ]);

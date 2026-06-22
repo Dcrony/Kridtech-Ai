@@ -70,7 +70,7 @@ User.prototype.comparePassword = async function(candidatePassword) {
 };
 
 User.prototype.toJSON = function() {
-  const values = { ...this.get() };
+  const values = this.get({ plain: true });
   delete values.password;
   return values;
 };

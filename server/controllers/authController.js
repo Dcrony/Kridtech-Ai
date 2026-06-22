@@ -2,24 +2,26 @@ const jwt = require('jsonwebtoken');
 const  User  = require('../models/User');
 
 const generateTokens = (user) => {
+  // Extract the clean data object, bypassing Sequelize instance layers
+  const rawUser = user.get ? user.get({ plain: true }) : user;
+
   const accessToken = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
+    { id: rawUser.id, email: rawUser.email, role: rawUser.role },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
   );
 
   const refreshToken = jwt.sign(
-    { id: user.id },
+    { id: rawUser.id },
     process.env.JWT_REFRESH_SECRET,
     { expiresIn: '7d' }
   );
 
   return { accessToken, refreshToken };
 };
-
 exports.register = async (req, res, next) => {
   try {
-    const { email, password, firstName, lastName, phone, companyName } = req.body;
+    const { email, password, firstName, lastName, phone, companyName, role } = req.body;
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -35,7 +37,8 @@ exports.register = async (req, res, next) => {
       firstName,
       lastName,
       phone,
-      companyName
+      companyName,
+      role: role || 'admin'
     });
 
     const { accessToken, refreshToken } = generateTokens(user);

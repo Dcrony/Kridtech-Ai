@@ -210,6 +210,8 @@ const LandingPage = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
 
+        * { box-sizing: border-box; }
+
         .display-font { font-family: 'Syne', sans-serif; }
 
         .hero-headline {
@@ -236,9 +238,11 @@ const LandingPage = () => {
           cursor: pointer;
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 8px;
           transition: background 0.15s, color 0.15s;
           text-decoration: none;
+          white-space: nowrap;
         }
         .btn-primary:hover {
           background: #1A1AFF;
@@ -256,9 +260,11 @@ const LandingPage = () => {
           cursor: pointer;
           display: inline-flex;
           align-items: center;
+          justify-content: center;
           gap: 8px;
           transition: background 0.15s, color 0.15s;
           text-decoration: none;
+          white-space: nowrap;
         }
         .btn-secondary:hover {
           background: #0A0A0A;
@@ -349,32 +355,100 @@ const LandingPage = () => {
           transition: color 0.15s;
         }
         footer a:hover { color: #0A0A0A; }
+
+        /* ---------- Responsive layout system ---------- */
+
+        .nav-inner {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 24px;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .desktop-nav { display: flex; align-items: center; gap: 32px; }
+        .desktop-actions { display: flex; align-items: center; gap: 16px; }
+        .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+
+        .section-wrap { max-width: 1200px; margin: 0 auto; padding: 100px 24px; }
+        .hero-wrap { max-width: 1200px; margin: 0 auto; padding: 140px 24px 100px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+        .stats-grid .stat-cell { border-left: 1px solid #E5E5E5; }
+        .stats-grid .stat-cell:first-child { border-left: none; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #E5E5E5; }
+        .grid-3-dark { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #222; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #E5E5E5; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #E5E5E5; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+        .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 32px; padding: 6px 12px; border: 1px solid #E5E5E5; border-radius: 2px; }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 48px; }
+        .hero-bullets { display: flex; flex-wrap: wrap; gap: 24px; }
+
+        .pricing-card { padding: 44px 36px; }
+
+        @media (max-width: 900px) {
+          .desktop-nav, .desktop-actions { display: none; }
+          .mobile-menu-btn { display: block; }
+
+          .section-wrap { padding: 64px 20px; }
+          .hero-wrap { padding: 110px 20px 64px; }
+
+          .grid-4 { grid-template-columns: repeat(2, 1fr); }
+          .grid-3, .grid-3-dark { grid-template-columns: repeat(2, 1fr); }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); }
+          .stats-grid .stat-cell:nth-child(2n+1) { border-left: none; }
+          .stats-grid .stat-cell:nth-child(n+3) { border-top: 1px solid #E5E5E5; }
+
+          .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
+        }
+
+        @media (max-width: 640px) {
+          .hero-wrap { padding: 100px 18px 56px; }
+          .section-wrap { padding: 56px 18px; }
+
+          .grid-4, .grid-3, .grid-3-dark, .grid-2 { grid-template-columns: 1fr; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); }
+
+          .hero-actions { flex-direction: column; align-items: stretch; }
+          .hero-actions a, .hero-actions button { width: 100%; }
+
+          .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+          .footer-bottom { flex-direction: column; align-items: flex-start; gap: 16px; }
+
+          .pricing-card { padding: 32px 24px; }
+        }
       `}</style>
 
       {/* Navigation */}
       <nav style={{ borderBottom: '1px solid #E5E5E5', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(12px)', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="nav-inner">
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 30, height: 30, background: '#0A0A0A', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 30, height: 30, background: '#0A0A0A', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Zap style={{ width: 14, height: 14, color: '#fff' }} />
             </div>
             <span className="display-font" style={{ fontSize: 16, fontWeight: 700, color: '#0A0A0A', letterSpacing: '-0.02em' }}>VoiceAI</span>
           </div>
 
           {/* Desktop Nav */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }} className="hidden-mobile">
+          <div className="desktop-nav">
             {navLinks.map((link) => (
               <a key={link.label} href={link.href} className="nav-link">{link.label}</a>
             ))}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }} className="hidden-mobile">
+          <div className="desktop-actions">
             <Link to="/login" className="nav-link">Sign In</Link>
             <Link to="/register" className="btn-primary" style={{ padding: '8px 18px', fontSize: 13 }}>Get Started</Link>
           </div>
 
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }} className="show-mobile">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="mobile-menu-btn">
             {mobileMenuOpen ? <X style={{ width: 20, height: 20 }} /> : <Menu style={{ width: 20, height: 20 }} />}
           </button>
         </div>
@@ -393,14 +467,14 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero */}
-      <section style={{ paddingTop: 140, paddingBottom: 100, maxWidth: 1200, margin: '0 auto', padding: '140px 24px 100px' }}>
+      <section className="hero-wrap">
         <div style={{ maxWidth: 820 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 32, padding: '6px 12px', border: '1px solid #E5E5E5', borderRadius: 2 }}>
+          <div className="hero-badge">
             <span className="accent-dot" />
             <span style={{ fontSize: 12, fontWeight: 500, color: '#555' }}>Trusted by 40+ businesses — never miss a call again</span>
           </div>
 
-          <h1 className="hero-headline" style={{ fontSize: 'clamp(52px, 8vw, 96px)', marginBottom: 32, color: '#0A0A0A' }}>
+          <h1 className="hero-headline" style={{ fontSize: 'clamp(40px, 9vw, 96px)', marginBottom: 32, color: '#0A0A0A' }}>
             Your reputation<br />
             took <span className="outline-text">years</span> to build.
           </h1>
@@ -410,7 +484,7 @@ const LandingPage = () => {
             Our AI phone agent answers every call, 24/7, and has you live in 48 hours.
           </p>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 48 }}>
+          <div className="hero-actions">
             <Link to="/register" className="btn-primary">
               Start Free Trial <ArrowRight style={{ width: 16, height: 16 }} />
             </Link>
@@ -419,7 +493,7 @@ const LandingPage = () => {
             </button>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
+          <div className="hero-bullets">
             {['Live in 48 hours', 'Every call answered, 24/7', 'Pay per minute — no retainers', 'No long-term contracts'].map((item) => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span className="accent-dot" />
@@ -432,10 +506,10 @@ const LandingPage = () => {
 
       {/* Stats */}
       <section className="stat-divider">
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
-          {stats.map((stat, i) => (
-            <div key={stat.label} style={{ textAlign: 'center', padding: '24px 16px', borderLeft: i > 0 ? '1px solid #E5E5E5' : 'none' }}>
-              <p className="display-font" style={{ fontSize: 36, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 4 }}>{stat.value}</p>
+        <div className="stats-grid">
+          {stats.map((stat) => (
+            <div key={stat.label} className="stat-cell" style={{ textAlign: 'center', padding: '24px 16px' }}>
+              <p className="display-font" style={{ fontSize: 'clamp(26px, 4vw, 36px)', fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: 4 }}>{stat.value}</p>
               <p style={{ fontSize: 12, color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 500 }}>{stat.label}</p>
             </div>
           ))}
@@ -443,10 +517,10 @@ const LandingPage = () => {
       </section>
 
       {/* Problem Section */}
-      <section style={{ padding: '100px 24px', maxWidth: 1200, margin: '0 auto' }}>
+      <section className="section-wrap">
         <div style={{ marginBottom: 56 }}>
           <p className="section-label" style={{ marginBottom: 16 }}>The Problem</p>
-          <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 560, lineHeight: 1.05, marginBottom: 16 }}>
+          <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 560, lineHeight: 1.05, marginBottom: 16 }}>
             The problem hiding in your reviews
           </h2>
           <p style={{ fontSize: 16, color: '#555', maxWidth: 480 }}>
@@ -454,14 +528,14 @@ const LandingPage = () => {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E5E5E5', marginBottom: 56 }}>
+        <div className="grid-3" style={{ marginBottom: 56 }}>
           {[
             { value: '62%', label: "Callers don't leave a voicemail", desc: "Most people who reach voicemail hang up and call the next option. They're gone before you even know they called." },
             { value: '4.3h', label: 'Average follow-up delay', desc: 'Leads contacted within 5 minutes convert 9× more often. Most businesses respond hours later — if at all.' },
             { value: '1★', label: "The review you can't afford", desc: '"Great business but impossible to reach." Those six words quietly undermine every 5-star review you\'ve earned.' },
           ].map((stat) => (
             <div key={stat.label} style={{ background: '#fff', padding: '40px 32px' }}>
-              <p className="display-font" style={{ fontSize: 48, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.04em', marginBottom: 8 }}>{stat.value}</p>
+              <p className="display-font" style={{ fontSize: 'clamp(36px, 6vw, 48px)', fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.04em', marginBottom: 8 }}>{stat.value}</p>
               <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A', marginBottom: 10 }}>{stat.label}</h3>
               <p style={{ fontSize: 13, color: '#777', lineHeight: 1.6 }}>{stat.desc}</p>
             </div>
@@ -469,7 +543,7 @@ const LandingPage = () => {
         </div>
 
         {/* Before / After */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: '#E5E5E5' }}>
+        <div className="grid-2">
           <div style={{ background: '#F7F7F7', padding: '40px 36px' }}>
             <p className="section-label" style={{ color: '#C0392B', marginBottom: 20 }}>Without VoiceAI</p>
             {[
@@ -504,16 +578,16 @@ const LandingPage = () => {
       </section>
 
       {/* Features */}
-      <section id="features" style={{ background: '#F7F7F7', padding: '100px 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <section id="features" style={{ background: '#F7F7F7' }}>
+        <div className="section-wrap">
           <div style={{ marginBottom: 56 }}>
             <p className="section-label" style={{ marginBottom: 16 }}>Features</p>
-            <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 480, lineHeight: 1.05 }}>
+            <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 480, lineHeight: 1.05 }}>
               Built to protect what you've earned
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#E5E5E5' }}>
+          <div className="grid-3">
             {features.map((feature) => {
               const Icon = feature.icon;
               return (
@@ -531,41 +605,39 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" style={{ padding: '100px 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ marginBottom: 56 }}>
-            <p className="section-label" style={{ marginBottom: 16 }}>Process</p>
-            <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 540, lineHeight: 1.05 }}>
-              Live in 48 hours. No code required.
-            </h2>
-          </div>
+      <section id="how-it-works" className="section-wrap">
+        <div style={{ marginBottom: 56 }}>
+          <p className="section-label" style={{ marginBottom: 16 }}>Process</p>
+          <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 540, lineHeight: 1.05 }}>
+            Live in 48 hours. No code required.
+          </h2>
+        </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: '#E5E5E5' }}>
-            {steps.map((step) => (
-              <div key={step.number} style={{ background: '#fff', padding: '36px 28px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-                  <span className="display-font" style={{ fontSize: 48, fontWeight: 800, color: '#E5E5E5', letterSpacing: '-0.04em' }}>{step.number}</span>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: '#1A1AFF', background: 'rgba(26,26,255,0.08)', padding: '3px 8px', borderRadius: 2 }}>{step.duration}</span>
-                </div>
-                <h3 style={{ fontSize: 15, fontWeight: 600, color: '#0A0A0A', marginBottom: 10 }}>{step.title}</h3>
-                <p style={{ fontSize: 13, color: '#666', lineHeight: 1.65 }}>{step.description}</p>
+        <div className="grid-4">
+          {steps.map((step) => (
+            <div key={step.number} style={{ background: '#fff', padding: '36px 28px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+                <span className="display-font" style={{ fontSize: 48, fontWeight: 800, color: '#E5E5E5', letterSpacing: '-0.04em' }}>{step.number}</span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#1A1AFF', background: 'rgba(26,26,255,0.08)', padding: '3px 8px', borderRadius: 2 }}>{step.duration}</span>
               </div>
-            ))}
-          </div>
+              <h3 style={{ fontSize: 15, fontWeight: 600, color: '#0A0A0A', marginBottom: 10 }}>{step.title}</h3>
+              <p style={{ fontSize: 13, color: '#666', lineHeight: 1.65 }}>{step.description}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Agent Types */}
-      <section style={{ background: '#0A0A0A', padding: '100px 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <section style={{ background: '#0A0A0A' }}>
+        <div className="section-wrap">
           <div style={{ marginBottom: 56 }}>
             <p className="section-label" style={{ color: '#555', marginBottom: 16 }}>Agents</p>
-            <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff', maxWidth: 520, lineHeight: 1.05 }}>
+            <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff', maxWidth: 520, lineHeight: 1.05 }}>
               One platform. Every voice role.
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: '#222' }}>
+          <div className="grid-3-dark">
             {agentTypes.map((agent) => {
               const Icon = agent.icon;
               return (
@@ -596,54 +668,52 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" style={{ padding: '100px 24px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ marginBottom: 56 }}>
-            <p className="section-label" style={{ marginBottom: 16 }}>Testimonials</p>
-            <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 560, lineHeight: 1.05 }}>
-              What happens when you never miss a call
-            </h2>
-          </div>
+      <section id="testimonials" className="section-wrap">
+        <div style={{ marginBottom: 56 }}>
+          <p className="section-label" style={{ marginBottom: 16 }}>Testimonials</p>
+          <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 560, lineHeight: 1.05 }}>
+            What happens when you never miss a call
+          </h2>
+        </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: '#E5E5E5' }}>
-            {testimonials.map((t, i) => (
-              <div key={i} style={{ background: i % 2 === 0 ? '#fff' : '#F7F7F7', padding: '40px 36px' }}>
-                <div style={{ display: 'flex', gap: 3, marginBottom: 20 }}>
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} style={{ width: 14, height: 14, color: '#0A0A0A', fill: '#0A0A0A' }} />
-                  ))}
+        <div className="grid-2">
+          {testimonials.map((t, i) => (
+            <div key={i} style={{ background: i % 2 === 0 ? '#fff' : '#F7F7F7', padding: '40px 36px' }}>
+              <div style={{ display: 'flex', gap: 3, marginBottom: 20 }}>
+                {[...Array(t.rating)].map((_, j) => (
+                  <Star key={j} style={{ width: 14, height: 14, color: '#0A0A0A', fill: '#0A0A0A' }} />
+                ))}
+              </div>
+              <p style={{ fontSize: 15, color: '#0A0A0A', lineHeight: 1.7, marginBottom: 28 }}>"{t.quote}"</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 36, height: 36, background: '#0A0A0A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{t.author[0]}</span>
                 </div>
-                <p style={{ fontSize: 15, color: '#0A0A0A', lineHeight: 1.7, marginBottom: 28 }}>"{t.quote}"</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ width: 36, height: 36, background: '#0A0A0A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{t.author[0]}</span>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: '#0A0A0A' }}>{t.author}</p>
-                    <p style={{ fontSize: 11, color: '#888' }}>{t.role}</p>
-                  </div>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#0A0A0A' }}>{t.author}</p>
+                  <p style={{ fontSize: 11, color: '#888' }}>{t.role}</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" style={{ background: '#F7F7F7', padding: '100px 24px' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+      <section id="pricing" style={{ background: '#F7F7F7' }}>
+        <div className="section-wrap" style={{ maxWidth: 900 }}>
           <div style={{ marginBottom: 56 }}>
             <p className="section-label" style={{ marginBottom: 16 }}>Pricing</p>
-            <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 480, lineHeight: 1.05 }}>
+            <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', maxWidth: 480, lineHeight: 1.05 }}>
               Pay only for what you use
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, background: '#E5E5E5' }}>
+          <div className="grid-2">
             {/* Human */}
-            <div style={{ background: '#fff', padding: '44px 36px' }}>
+            <div className="pricing-card" style={{ background: '#fff' }}>
               <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#888', marginBottom: 12 }}>Hiring a human rep</p>
-              <p className="display-font" style={{ fontSize: 44, fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.04em', marginBottom: 32 }}>
+              <p className="display-font" style={{ fontSize: 'clamp(32px, 6vw, 44px)', fontWeight: 800, color: '#0A0A0A', letterSpacing: '-0.04em', marginBottom: 32 }}>
                 $50–80k<span style={{ fontSize: 16, color: '#888', fontWeight: 400 }}>/yr</span>
               </p>
               {['8 hours/day only', 'Takes sick days', 'Needs training & management', 'Quits after 18 months', "Can't scale overnight", 'Still misses calls at peak times'].map((item, i) => (
@@ -655,12 +725,12 @@ const LandingPage = () => {
             </div>
 
             {/* AI */}
-            <div className="card-black" style={{ padding: '44px 36px', position: 'relative' }}>
+            <div className="card-black pricing-card" style={{ position: 'relative' }}>
               <div style={{ position: 'absolute', top: 0, right: 0, background: '#1A1AFF', color: '#fff', fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', padding: '4px 12px' }}>
                 Recommended
               </div>
               <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#555', marginBottom: 12 }}>VoiceAI Agent</p>
-              <p className="display-font" style={{ fontSize: 44, fontWeight: 800, color: '#fff', letterSpacing: '-0.04em', marginBottom: 4 }}>
+              <p className="display-font" style={{ fontSize: 'clamp(32px, 6vw, 44px)', fontWeight: 800, color: '#fff', letterSpacing: '-0.04em', marginBottom: 4 }}>
                 from $0.09<span style={{ fontSize: 16, color: '#555', fontWeight: 400 }}>/min</span>
               </p>
               <p style={{ fontSize: 12, color: '#666', marginBottom: 32 }}>Pay per minute of call time only</p>
@@ -682,48 +752,46 @@ const LandingPage = () => {
       </section>
 
       {/* FAQ */}
-      <section id="faq" style={{ padding: '100px 24px' }}>
-        <div style={{ maxWidth: 720, margin: '0 auto' }}>
-          <div style={{ marginBottom: 56 }}>
-            <p className="section-label" style={{ marginBottom: 16 }}>FAQ</p>
-            <h2 className="display-font" style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', lineHeight: 1.05 }}>
-              Common questions
-            </h2>
-          </div>
+      <section id="faq" className="section-wrap" style={{ maxWidth: 720 }}>
+        <div style={{ marginBottom: 56 }}>
+          <p className="section-label" style={{ marginBottom: 16 }}>FAQ</p>
+          <h2 className="display-font" style={{ fontSize: 'clamp(30px, 6vw, 52px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#0A0A0A', lineHeight: 1.05 }}>
+            Common questions
+          </h2>
+        </div>
 
-          <div>
-            {faqs.map((faq, i) => (
-              <div key={i} className="faq-item">
-                <button
-                  onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '22px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
-                >
-                  <span style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A', paddingRight: 24 }}>{faq.question}</span>
-                  <ChevronDown style={{ width: 16, height: 16, color: '#888', flexShrink: 0, transform: activeFaq === i ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                </button>
-                {activeFaq === i && (
-                  <div style={{ paddingBottom: 24 }}>
-                    <p style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{faq.answer}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+        <div>
+          {faqs.map((faq, i) => (
+            <div key={i} className="faq-item">
+              <button
+                onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '22px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <span style={{ fontSize: 14, fontWeight: 600, color: '#0A0A0A', paddingRight: 24 }}>{faq.question}</span>
+                <ChevronDown style={{ width: 16, height: 16, color: '#888', flexShrink: 0, transform: activeFaq === i ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+              </button>
+              {activeFaq === i && (
+                <div style={{ paddingBottom: 24 }}>
+                  <p style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{faq.answer}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section style={{ background: '#0A0A0A', padding: '100px 24px' }}>
-        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+      <section style={{ background: '#0A0A0A' }}>
+        <div className="section-wrap" style={{ maxWidth: 800 }}>
           <p className="section-label" style={{ color: '#444', marginBottom: 24 }}>Get Started</p>
-          <h2 className="display-font" style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff', lineHeight: 1.0, marginBottom: 24 }}>
+          <h2 className="display-font" style={{ fontSize: 'clamp(32px, 7vw, 64px)', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff', lineHeight: 1.0, marginBottom: 24 }}>
             You've earned a great reputation.<br />
             <span style={{ WebkitTextStroke: '2px #fff', color: 'transparent' }}>Don't let missed calls undo it.</span>
           </h2>
           <p style={{ fontSize: 16, color: '#666', maxWidth: 520, lineHeight: 1.7, marginBottom: 40 }}>
             Every unanswered call is a customer who went elsewhere — and possibly a review that works against you. VoiceAI makes sure that never happens again.
           </p>
-          <div style={{ display: 'flex', gap: 12 }}>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <Link to="/register" className="btn-primary" style={{ background: '#fff', color: '#0A0A0A', border: '2px solid #fff' }}>
               Protect My Reputation — Free Strategy Call <ArrowRight style={{ width: 16, height: 16 }} />
             </Link>
@@ -733,9 +801,9 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: '1px solid #E5E5E5', padding: '60px 24px 40px' }}>
+      <footer style={{ borderTop: '1px solid #E5E5E5', padding: '60px 20px 40px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48 }}>
+          <div className="footer-grid">
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
                 <div style={{ width: 26, height: 26, background: '#0A0A0A', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -763,7 +831,7 @@ const LandingPage = () => {
             ))}
           </div>
           <div className="hairline" style={{ marginBottom: 24 }} />
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="footer-bottom">
             <p style={{ fontSize: 12, color: '#bbb' }}>© 2026 VoiceAI. All rights reserved.</p>
             <div style={{ display: 'flex', gap: 16 }}>
               <Globe style={{ width: 14, height: 14, color: '#ccc' }} />

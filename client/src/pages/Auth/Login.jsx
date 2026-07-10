@@ -29,7 +29,7 @@ const Login = () => {
       <style>{css}</style>
 
       {/* Left panel — branding */}
-      <div style={styles.left}>
+      <div style={styles.left} className="vo-left">
         <div style={styles.leftInner}>
           <div style={styles.logo}>
             <div style={styles.logoIcon}><Zap style={{ width: 16, height: 16, color: '#fff' }} /></div>
@@ -44,7 +44,7 @@ const Login = () => {
             <p style={styles.leftSub}>
               Our AI phone agents work 24/7 so your reputation never suffers from a missed call again.
             </p>
-            <div style={styles.statRow}>
+            <div style={styles.statRow} className="vo-stat-row">
               {[['98%', 'Answer Rate'], ['50K+', 'Calls Handled'], ['4.9★', 'Avg Rating']].map(([v, l]) => (
                 <div key={l} style={styles.stat}>
                   <span style={styles.statValue}>{v}</span>
@@ -57,7 +57,7 @@ const Login = () => {
       </div>
 
       {/* Right panel — form */}
-      <div style={styles.right}>
+      <div style={styles.right} className="vo-right">
         <div style={styles.formWrap}>
           <div style={{ marginBottom: 36 }}>
             <p style={styles.formEyebrow}>Sign In</p>
@@ -133,6 +133,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     padding: '40px 48px',
+    boxSizing: 'border-box',
   },
   leftInner: {
     display: 'flex',
@@ -153,6 +154,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   logoText: {
     fontFamily: "'Syne', sans-serif",
@@ -174,7 +176,7 @@ const styles = {
   },
   leftHeadline: {
     fontFamily: "'Syne', sans-serif",
-    fontSize: 56,
+    fontSize: 'clamp(38px, 4vw, 56px)',
     fontWeight: 800,
     letterSpacing: '-0.04em',
     lineHeight: 1.0,
@@ -195,6 +197,7 @@ const styles = {
   statRow: {
     display: 'flex',
     gap: 32,
+    flexWrap: 'wrap',
     borderTop: '1px solid #1a1a1a',
     paddingTop: 28,
   },
@@ -219,11 +222,13 @@ const styles = {
   },
   right: {
     flex: 1,
+    minWidth: 0,
     background: '#fff',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '40px 48px',
+    boxSizing: 'border-box',
   },
   formWrap: {
     width: '100%',
@@ -321,9 +326,19 @@ const css = `
   @keyframes spin { to { transform: rotate(360deg); } }
   .vo-input:focus { border-color: #0A0A0A !important; background: #fff !important; }
   .vo-submit:hover { background: #1A1AFF !important; border-color: #1A1AFF !important; }
+
+  @media (max-width: 900px) {
+    .vo-left { width: 38% !important; padding: 32px 32px !important; }
+  }
+
   @media (max-width: 700px) {
     .vo-left { display: none !important; }
-    .vo-right { width: 100% !important; }
+    .vo-right { width: 100% !important; padding: 32px 24px !important; }
+  }
+
+  @media (max-width: 480px) {
+    .vo-right { padding: 28px 18px !important; }
+    .vo-stat-row { gap: 20px !important; }
   }
 `;
 

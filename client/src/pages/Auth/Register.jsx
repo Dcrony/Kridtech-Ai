@@ -38,7 +38,7 @@ const Register = () => {
       <style>{css}</style>
 
       {/* Left panel */}
-      <div style={styles.left}>
+      <div style={styles.left} className="vo-left">
         <div style={styles.leftInner}>
           <div style={styles.logo}>
             <div style={styles.logoIcon}><Zap style={{ width: 16, height: 16, color: '#fff' }} /></div>
@@ -46,7 +46,7 @@ const Register = () => {
           </div>
           <div style={styles.leftContent}>
             <p style={styles.leftEyebrow}>Get started today</p>
-            <h2 style={styles.leftHeadline}>
+            <h2 style={styles.leftHeadline} className="vo-left-headline">
               Live in<br />
               <span style={styles.outlineText}>48 hours.</span>
             </h2>
@@ -71,7 +71,7 @@ const Register = () => {
       </div>
 
       {/* Right panel — form */}
-      <div style={styles.right}>
+      <div style={styles.right} className="vo-right">
         <div style={styles.formWrap}>
           <div style={{ marginBottom: 32 }}>
             <p style={styles.formEyebrow}>Create Account</p>
@@ -81,7 +81,7 @@ const Register = () => {
 
           <form onSubmit={handleSubmit}>
             {/* Name row */}
-            <div style={styles.row}>
+            <div style={styles.row} className="vo-row">
               <div style={styles.field}>
                 <label style={styles.label}>First Name</label>
                 <input
@@ -144,7 +144,7 @@ const Register = () => {
             </div>
 
             {/* Phone + Company row */}
-            <div style={styles.row}>
+            <div style={styles.row} className="vo-row">
               <div style={styles.field}>
                 <label style={styles.label}>Phone</label>
                 <input
@@ -207,6 +207,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     padding: '40px 48px',
+    boxSizing: 'border-box',
   },
   leftInner: {
     display: 'flex',
@@ -227,6 +228,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   logoText: {
     fontFamily: "'Syne', sans-serif",
@@ -248,7 +250,7 @@ const styles = {
   },
   leftHeadline: {
     fontFamily: "'Syne', sans-serif",
-    fontSize: 52,
+    fontSize: 'clamp(36px, 4vw, 52px)',
     fontWeight: 800,
     letterSpacing: '-0.04em',
     lineHeight: 1.0,
@@ -291,12 +293,14 @@ const styles = {
   },
   right: {
     flex: 1,
+    minWidth: 0,
     background: '#fff',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '40px 48px',
     overflowY: 'auto',
+    boxSizing: 'border-box',
   },
   formWrap: {
     width: '100%',
@@ -410,8 +414,19 @@ const css = `
   @keyframes spin { to { transform: rotate(360deg); } }
   .vo-input:focus { border-color: #0A0A0A !important; background: #fff !important; }
   .vo-submit:hover:not(:disabled) { background: #1A1AFF !important; border-color: #1A1AFF !important; }
+
+  @media (max-width: 900px) {
+    .vo-left { width: 34% !important; padding: 32px 32px !important; }
+  }
+
   @media (max-width: 700px) {
     .vo-left { display: none !important; }
+    .vo-right { width: 100% !important; padding: 32px 24px !important; }
+  }
+
+  @media (max-width: 480px) {
+    .vo-row { grid-template-columns: 1fr !important; gap: 0 !important; }
+    .vo-right { padding: 28px 18px !important; }
   }
 `;
 

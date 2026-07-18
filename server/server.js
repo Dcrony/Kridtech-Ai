@@ -5,7 +5,9 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
-
+// Validate environment early
+const validateEnv = require('./config/validateEnv');
+validateEnv();
 
 const { sequelize, testConnection } = require('./config/database');
 const { errorHandler } = require('./middleware/errorHandler');
@@ -103,7 +105,7 @@ const startServer = async () => {
     await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synchronized');
 
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
     });

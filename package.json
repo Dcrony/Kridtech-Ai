@@ -2,11 +2,10 @@
   "name": "kridtech-root",
   "private": true,
   "version": "1.0.0",
-  "description": "Root package to ensure server deps install on deploy",
-  "scripts": {
-    "postinstall": "cd server && yarn install --production || true"
+  "scripts": {},
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "dependencies": {
-    "sqlite3": "^6.0.1"
-  }
+  "description": "Root helper: installs server deps during postinstall (no sqlite enforced)",
+  "postinstall": "cd server && npm ci --omit=dev || (cd server && npm install --only=production)"
 }

@@ -14,14 +14,16 @@ const seedData = async () => {
     console.log('Seeding database...');
 
     // Create demo user
-    const user = await User.create({
-      email: 'demo@krid-replica.com',
-      password: 'DemoPass123!',
-      firstName: 'Demo',
-      lastName: 'User',
-      phone: '+1234567890',
-      companyName: 'Demo Company',
-      role: 'admin'
+    const [user, created] = await User.findOrCreate({
+      where: { email: 'demo@krid-replica.com' },
+      defaults: {
+        password: 'DemoPass123!',
+        firstName: 'Demo',
+        lastName: 'User',
+        phone: '+1234567890',
+        companyName: 'Demo Company',
+        role: 'admin'
+      }
     });
 
     // Create AI Agents
@@ -161,32 +163,58 @@ const seedData = async () => {
     ]);
 
     // Create appointments
-    await Appointment.bulkCreate([
-      {
-        callId: calls[1].id,
-        agentId: agents[0].id,
-        userId: user.id,
-        contactName: 'Emily Johnson',
-        contactPhone: '+15559876543',
-        contactEmail: 'emily@example.com',
-        title: 'Sales Consultation - Emily Johnson',
-        description: 'Consulting services discussion for startup scaling',
-        scheduledDate: dayjs().add(2, 'day').toDate(),
-        duration: 60,
-        status: 'scheduled'
-      },
-      {
-        agentId: agents[1].id,
-        userId: user.id,
-        contactName: 'Robert Chen',
-        contactPhone: '+15551112222',
-        title: 'Follow-up Call - Robert Chen',
-        description: 'Follow-up on sales proposal discussion',
-        scheduledDate: dayjs().add(3, 'day').toDate(),
-        duration: 30,
-        status: 'scheduled'
-      }
-    ]);
+    await Appointment.create({
+      callId: calls[0].id,
+      agentId: agents[0].id,
+      userId: user.id,
+      contactName: 'Emily Johnson',
+      contactPhone: '+15559876543',
+      contactEmail: 'emily@example.com',
+      title: 'Sales Consultation - Emily Johnson',
+      description: 'Consulting services discussion for startup scaling',
+      scheduledDate: dayjs().add(2, 'day').toDate(),
+      duration: 60,
+      status: 'scheduled'
+    });
+
+    await Appointment.create({
+      agentId: agents[1].id,
+      userId: user.id,
+      contactName: 'Robert Chen',
+      contactPhone: '+15551112222',
+      title: 'Follow-up Call - Robert Chen',
+      description: 'Follow-up on sales proposal discussion',
+      scheduledDate: dayjs().add(3, 'day').toDate(),
+      duration: 30,
+      status: 'scheduled'
+    });
+
+    // Create appointments
+    await Appointment.create({
+      callId: calls[1].id,
+      agentId: agents[0].id,
+      userId: user.id,
+      contactName: 'Emily Johnson',
+      contactPhone: '+15559876543',
+      contactEmail: 'emily@example.com',
+      title: 'Sales Consultation - Emily Johnson',
+      description: 'Consulting services discussion for startup scaling',
+      scheduledDate: dayjs().add(2, 'day').toDate(),
+      duration: 60,
+      status: 'scheduled'
+    });
+
+    await Appointment.create({
+      agentId: agents[1].id,
+      userId: user.id,
+      contactName: 'Robert Chen',
+      contactPhone: '+15551112222',
+      title: 'Follow-up Call - Robert Chen',
+      description: 'Follow-up on sales proposal discussion',
+      scheduledDate: dayjs().add(3, 'day').toDate(),
+      duration: 30,
+      status: 'scheduled'
+    });
 
     // Create leads
     await Lead.bulkCreate([

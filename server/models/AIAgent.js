@@ -37,31 +37,31 @@ const AIAgent = sequelize.define('AIAgent', {
     type: DataTypes.TEXT
   },
   knowledgeBase: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   faqs: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: []
   },
   customScripts: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: []
   },
   qualificationRules: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   appointmentSettings: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   handoffTriggers: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: []
   },
   businessHours: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {
       monday: { start: '09:00', end: '17:00', enabled: true },
       tuesday: { start: '09:00', end: '17:00', enabled: true },

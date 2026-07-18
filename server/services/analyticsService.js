@@ -82,25 +82,42 @@ class AnalyticsService {
   async getCallsOverTime(userId, period) {
     const startDate = this.getPeriodStart(period);
     const groupFormat = period === '24h' ? 'YYYY-MM-DD HH:00:00' : 'YYYY-MM-DD';
-    
-    // FIX: Using camelCase 'createdAt' instead of snake_case 'created_at'
+
     const calls = await Call.findAll({
       where: { userId, createdAt: { [Op.gte]: startDate } },
-      attributes: [
-        [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('createdAt')), 'date'],
-        [fn('COUNT', '*'), 'count'],
-        [fn('SUM', col('duration')), 'duration']
-      ],
-      group: [fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('createdAt'))],
-      order: [[fn('DATE_TRUNC', period === '24h' ? 'hour' : 'day', col('createdAt')), 'ASC']],
-      raw: true
+      attributes: ['createdAt', 'duration'],
+      raw: true,
+      order: [['createdAt', 'ASC']]
     });
 
-    return calls.map(c => ({
-      date: dayjs(c.date).format(groupFormat),
-      calls: parseInt(c.count),
-      minutes: Math.round(parseFloat(c.duration || 0) / 60)
-    }));
+    const grouped = new Map();
+
+    calls.forEach(call => {
+      const bucketDate = period === '24h'
+        ? dayjs(call.createdAt).startOf('hour').toDate()
+        : dayjs(call.createdAt).startOf('day').toDate();
+      const bucketKey = bucketDate.toISOString();
+
+      if (!grouped.has(bucketKey)) {
+        grouped.set(bucketKey, {
+          date: bucketDate,
+          count: 0,
+          duration: 0
+        });
+      }
+
+      const entry = grouped.get(bucketKey);
+      entry.count += 1;
+      entry.duration += Number(call.duration || 0);
+    });
+
+    return Array.from(grouped.values())
+      .sort((a, b) => a.date - b.date)
+      .map(entry => ({
+        date: dayjs(entry.date).format(groupFormat),
+        calls: entry.count,
+        minutes: Math.round(entry.duration / 60)
+      }));
   }
 
   /**

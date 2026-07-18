@@ -32,7 +32,7 @@ exports.getAgents = async (req, res, next) => {
     if (status) where.status = status;
     if (type) where.type = type;
     if (search) {
-      where.name = { [Op.iLike]: `%${search}%` };
+      where.name = { [Op.like]: `%${search}%` };
     }
 
     const { count, rows: agents } = await AIAgent.findAndCountAll({

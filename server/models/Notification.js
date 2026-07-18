@@ -25,7 +25,7 @@ const Notification = sequelize.define('Notification', {
     allowNull: false
   },
   data: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   priority: {

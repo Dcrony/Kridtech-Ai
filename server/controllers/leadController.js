@@ -16,11 +16,11 @@ exports.getLeads = async (req, res, next) => {
     if (assignedTo) where.assignedTo = assignedTo;
     if (search) {
       where[Op.or] = [
-        { firstName: { [Op.iLike]: `%${search}%` } },
-        { lastName: { [Op.iLike]: `%${search}%` } },
-        { email: { [Op.iLike]: `%${search}%` } },
-        { phone: { [Op.iLike]: `%${search}%` } },
-        { company: { [Op.iLike]: `%${search}%` } }
+        { firstName: { [Op.like]: `%${search}%` } },
+        { lastName: { [Op.like]: `%${search}%` } },
+        { email: { [Op.like]: `%${search}%` } },
+        { phone: { [Op.like]: `%${search}%` } },
+        { company: { [Op.like]: `%${search}%` } }
       ];
     }
 

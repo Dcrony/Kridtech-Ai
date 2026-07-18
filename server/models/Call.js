@@ -73,7 +73,7 @@ const Call = sequelize.define('Call', {
     defaultValue: false
   },
   qualificationData: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   appointmentBooked: {
@@ -81,7 +81,7 @@ const Call = sequelize.define('Call', {
     defaultValue: false
   },
   appointmentData: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   handoffReason: {
@@ -102,7 +102,7 @@ const Call = sequelize.define('Call', {
     type: DataTypes.DATE
   },
   tags: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: []
   },
   notes: {
@@ -112,7 +112,7 @@ const Call = sequelize.define('Call', {
     type: DataTypes.FLOAT
   },
   conversationLog: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: []
   },
   startedAt: {

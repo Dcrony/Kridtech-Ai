@@ -23,9 +23,9 @@ exports.getCalls = async (req, res, next) => {
     }
     if (search) {
       where[Op.or] = [
-        { callerName: { [Op.iLike]: `%${search}%` } },
-        { callerNumber: { [Op.iLike]: `%${search}%` } },
-        { transcript: { [Op.iLike]: `%${search}%` } }
+        { callerName: { [Op.like]: `%${search}%` } },
+        { callerNumber: { [Op.like]: `%${search}%` } },
+        { transcript: { [Op.like]: `%${search}%` } }
       ];
     }
 

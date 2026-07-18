@@ -68,11 +68,11 @@ const Lead = sequelize.define('Lead', {
     references: { model: 'users', key: 'id' }
   },
   customFields: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: {}
   },
   tags: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     defaultValue: []
   },
   isActive: {

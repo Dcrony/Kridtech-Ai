@@ -5,7 +5,7 @@ const AIAgent = require('../models/AIAgent');
 const Call = require('../models/Call');
 const { randomUUID } = require('crypto');
 
-describe('analyticsService SQLite compatibility', () => {
+describe('analyticsService data retrieval', () => {
   let user;
 
   beforeAll(async () => {

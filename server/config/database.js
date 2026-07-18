@@ -1,17 +1,21 @@
+const path = require('path');
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
+const sqliteStorage = process.env.SQLITE_STORAGE || path.join(__dirname, '..', 'data', 'kridtech.sqlite');
+const shouldUseSqlite = process.env.DB_DIALECT === 'sqlite' || process.env.DB_USE_SQLITE === 'true' || process.env.NODE_ENV !== 'production';
+
+const createPostgresSequelize = () => new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: "postgres",
+    dialect: 'postgres',
     logging: false,
     dialectOptions:
-      process.env.DB_SSL === "true"
+      process.env.DB_SSL === 'true'
         ? {
             ssl: {
               require: true,
@@ -22,15 +26,28 @@ const sequelize = new Sequelize(
   }
 );
 
+const createSqliteSequelize = () => new Sequelize({
+  dialect: 'sqlite',
+  storage: sqliteStorage,
+  logging: false,
+});
 
-// Test connection
+let sequelize = shouldUseSqlite ? createSqliteSequelize() : createPostgresSequelize();
+
 const testConnection = async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Database connection established successfully.');
+    console.log(`✅ Database connection established successfully via ${sequelize.getDialect()}.`);
   } catch (error) {
-    console.error('❌ Unable to connect to the database:', error.message);
-    process.exit(1);
+    if (process.env.DB_USE_SQLITE !== 'false' && !shouldUseSqlite) {
+      console.warn('⚠️ Falling back to local SQLite because the remote database is unavailable:', error.message);
+      sequelize = createSqliteSequelize();
+      await sequelize.authenticate();
+      console.log('✅ SQLite fallback connection established.');
+    } else {
+      console.error('❌ Unable to connect to the database:', error.message);
+      throw error;
+    }
   }
 };
 

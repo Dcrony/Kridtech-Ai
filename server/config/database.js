@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 const sqliteStorage = process.env.SQLITE_STORAGE || path.join(__dirname, '..', 'data', 'kridtech.sqlite');
-const shouldUseSqlite = process.env.DB_DIALECT === 'sqlite' || process.env.DB_USE_SQLITE === 'true' || process.env.NODE_ENV !== 'production';
+const shouldUseSqlite = process.env.DB_DIALECT === 'sqlite' || process.env.DB_USE_SQLITE === 'true';
 
 const createPostgresSequelize = () => new Sequelize(
   process.env.DB_NAME,

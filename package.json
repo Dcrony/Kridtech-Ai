@@ -1,0 +1,12 @@
+{
+  "name": "kridtech-root",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Root package to ensure server deps install on deploy",
+  "scripts": {
+    "postinstall": "cd server && yarn install --production || true"
+  },
+  "dependencies": {
+    "sqlite3": "^6.0.1"
+  }
+}

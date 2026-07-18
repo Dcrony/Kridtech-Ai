@@ -100,7 +100,7 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await testConnection();
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: false, alter: false });
     console.log('✅ Database synchronized');
 
     app.listen(PORT, () => {

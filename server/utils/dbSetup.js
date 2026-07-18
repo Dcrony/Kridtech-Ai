@@ -11,8 +11,8 @@ const setupDatabase = async () => {
   try {
     console.log('Setting up database...');
     
-    // Force sync (drops and recreates tables - use with caution)
-    await sequelize.sync({ force: true });
+    // Create or update tables without dropping existing ones.
+    await sequelize.sync({ force: false, alter: false });
     
     console.log('✅ Database tables created successfully');
     console.log('Tables created:');
